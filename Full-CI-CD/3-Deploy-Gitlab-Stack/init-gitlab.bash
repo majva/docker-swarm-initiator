@@ -24,4 +24,4 @@ echo "deploing stack ..."
 export GITLAB_HOST=git.hacktor.local
 export REGISTRY_HOST=registry.hacktor.local
 
-docker stack deploy -c gitlab.docker-compose.swarm.yml gitlab
+docker stack deploy -c gitlab.docker-compose.swarm.yml gitlab > logs
