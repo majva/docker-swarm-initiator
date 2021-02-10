@@ -10,7 +10,7 @@ docker node update --label-add traefik-public.traefik-public-certificates=true $
 echo "[+] setting encrypt config ..."
 pass=password
 export EMAIL=lecerts@hacktor.local
-export DOMAIN=traefik.gitlab.hacktor.local
+export DOMAIN=traefik.hacktor.local
 export USERNAME=admin
 export PASSWORD=$pass
 export HASHED_PASSWORD=$(openssl passwd -apr1 $PASSWORD)
