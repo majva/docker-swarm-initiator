@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source .bashrc
+
 # Create Volumes
 
 echo "Creating volumes ..."
@@ -20,8 +22,4 @@ docker node update --label-add gitlab.registry-data=true $NODE_ID
 # Deploy Stack
 
 echo "deploing stack ..."
-
-export GITLAB_HOST=git.hacktor.local
-export REGISTRY_HOST=registry.hacktor.local
-
 docker stack deploy -c gitlab.docker-compose.swarm.yml gitlab > logs
