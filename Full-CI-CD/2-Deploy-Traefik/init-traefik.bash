@@ -20,4 +20,4 @@ export HASHED_PASSWORD=$(openssl passwd -apr1 $PASSWORD)
 
 # Deploy the stack
 echo "[+] deploying traefik ..."
-docker stack deploy -c traefik.docker-compose.swarm.yml traefik
+docker stack deploy -c traefik.docker-compose.swarm.yml traefik > log
