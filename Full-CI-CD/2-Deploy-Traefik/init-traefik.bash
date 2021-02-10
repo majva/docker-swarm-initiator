@@ -8,12 +8,7 @@ docker node update --label-add traefik-public.traefik-public-certificates=true $
 
 # Let's encrypt configs
 echo "[+] setting encrypt config ..."
-pass=password
-export EMAIL=lecerts@hacktor.local
-export DOMAIN=traefik.hacktor.local
-export USERNAME=admin
-export PASSWORD=$pass
-export HASHED_PASSWORD=$(openssl passwd -apr1 $PASSWORD)
+source .bashrc
 
 # Deploy the stack
 echo "[+] deploying traefik ..."
