@@ -1,4 +1,4 @@
-version: '3'
+version: "3.3"
 services:
 #Registry
   registry:
@@ -13,7 +13,7 @@ services:
       REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
     volumes:
       - registrydata:/data
-      - ./auth:/auth
+      - ./root/registry/auth:/auth
     networks:
       - mynet
 #Nginx Service

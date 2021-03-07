@@ -1,5 +1,9 @@
 #!/bin/bash
 
+: ' write refrences for more searching
+    refrence: https://phoenixnap.com/kb/set-up-a-private-docker-registry
+'
+
 if [ "$EUID" -ne 0 ]
   then echo "Run this script on sudo permission ..."
   exit
@@ -27,7 +31,8 @@ echo "[+] Request a new password file named {registry.passwd} for your user"
 
 htpasswd -Bc registry.passwd hacktor
 
-mkdir tmp
+mkdir ./tmp
+touch ./tmp/rootCA
 
 openssl x509 -in rootCA.pem -inform PEM -out ./tmp/rootCA.crt
 
