@@ -13,8 +13,6 @@ mkdir /root/registry && mkdir /root/registry/nginx && mkdir /root/registry/auth
 mkdir -p /root/nginx/conf.d && mkdir -p /root/nginx/ssl
 mv ./registry.conf /root/registry/nginx/conf.d
 
-echo "\nRun this script on sudo permission ... \n"
-
 mkdir /root/create-ssl && mkdir /root/create-ssl/keys
 mkdir /root/create-ssl/certs
 
