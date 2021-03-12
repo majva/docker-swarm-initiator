@@ -73,10 +73,10 @@ create_registry_passwrd() {
   dpkg-reconfigure ca-certificates
 }
 
-check_root_access()
-create_registry_directories()
-create_ssl_dir_and_file()
-create_registry_passwrd()
+check_root_access
+create_registry_directories
+create_ssl_dir_and_file
+create_registry_passwrd
 
 systemctl restart docker
 
