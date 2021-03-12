@@ -55,7 +55,7 @@ create_registry_passwrd() {
   if [ ! -d "./tmp" ]
     then
       mkdir ./tmp
-      touch ./tmp/rootCA
+      touch ./tmp/rootCA.crt
   fi
 
   if [ ! -d "/etc/docker/certs.d/registry.hacktor.com" ]
