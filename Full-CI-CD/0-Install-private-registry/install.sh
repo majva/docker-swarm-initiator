@@ -47,6 +47,8 @@ create_ssl_dir_and_file() {
 
 create_registry_passwrd() {
   echo "[+] Request a new password file named {registry.passwd} for your user"
+  
+  apt install apache2-utils -y
 
   htpasswd -Bc registry.passwd hacktor
 
