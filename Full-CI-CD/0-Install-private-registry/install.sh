@@ -5,13 +5,13 @@
 '
 
 if [ "$EUID" -ne 0 ]
-  then echo "Run this script on sudo permission ..."
+  then echo -e "\033[31mRun this script on sudo permission ..."
   exit
 fi
 
 mkdir /root/registry && mkdir /root/registry/nginx && mkdir /root/registry/auth
 mkdir -p /root/nginx/conf.d && mkdir -p /root/nginx/ssl
-mv ./nginx.conf /root/registry/nginx/conf.d
+mv ./registry.conf /root/registry/nginx/conf.d
 
 echo "\nRun this script on sudo permission ... \n"
 
