@@ -23,3 +23,4 @@ initialize_server() {
 }
 
 check_root_access
+initialize_server
