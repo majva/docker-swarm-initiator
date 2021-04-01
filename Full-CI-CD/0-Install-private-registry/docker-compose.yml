@@ -26,8 +26,8 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - /root/nginx/conf.d/:/etc/nginx/conf.d/
-      - /root/nginx/ssl/:/etc/nginx/ssl/
+      - /root/registry/nginx/conf.d/:/etc/nginx/conf.d/
+      - /root/registry/nginx/ssl/:/etc/nginx/ssl/
     networks:
       - mynet
 #Docker Networks
