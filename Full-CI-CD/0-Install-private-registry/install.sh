@@ -40,11 +40,11 @@ create_ssl_dir_and_file() {
     
     openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /root/create-ssl/keys/registry.key -out /root/create-ssl/certs/registry.crt
 
-    openssl dhparam -out /etc/nginx/ssl/fullchain.pem 2048
-    openssl dhparam -out /etc/nginx/ssl/privkey.pem 2048
+    openssl dhparam -out /root/create-ssl/certs/fullchain.pem 2048
+    openssl dhparam -out /root/create-ssl/keys/privkey.pem 2048
 
-    cp /etc/nginx/ssl/fullchain.pem /root/registry/nginx/ssl/
-    cp /etc/nginx/ssl/privkey.pem /root/registry/nginx/ssl/
+    cp /root/create-ssl/certs/registry.pem /root/registry/nginx/ssl/
+    cp /root/create-ssl/keys/registrykey.pem /root/registry/nginx/ssl/
 }
 
 create_registry_passwrd() {
@@ -63,15 +63,16 @@ create_registry_passwrd() {
 
   if [ ! -d "/etc/docker/certs.d/registry.hacktor.com" ]
     then
-      mkdir -p /etc/docker/certs.d/registry.hacktor.com/
+      mkdir -p /etc/docker/certs.d/registry.hacktor.com
       mkdir -p /usr/share/ca-certificates/extra/
   fi
 
   openssl x509 -in rootCA.pem -inform PEM -out ./tmp/rootCA.crt
 
+  mkdir -p /etc/docker/certs.d/registry.hacktor.com/
+  mkdir -p /usr/share/ca-certificates/extra/
   cp ./tmp/rootCA.crt /etc/docker/certs.d/registry.hacktor.com/
   cp ./tmp/rootCA.crt /usr/share/ca-certificates/extra/
-
   rm -rf ./tmp
 
   dpkg-reconfigure ca-certificates
