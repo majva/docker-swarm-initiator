@@ -3,34 +3,19 @@ services:
 #Registry
   registry:
     image: registry:2
+    name: private-registry
     restart: always
     ports:
     - "5000:5000"
     environment:
-      REGISTRY_AUTH: htpasswd
-      REGISTRY_AUTH_HTPASSWD_REALM: Registry-Realm
-      REGISTRY_AUTH_HTPASSWD_PATH: /root/registry/auth/registry.passwd
-      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
+      REGISTRY_HTTP_TLS_CERTIFICATE: /certs/domain.crt
+      REGISTRY_HTTP_TLS_KEY: /certs/domain.key
     volumes:
-      - registrydata:/data
-      - ./root/registry/auth:/auth
+      - /root/docker_data/image:/var/lib/registry
+      - /root/docker_data/certs:/certs
     networks:
       - mynet
-#Nginx Service
-  nginx:
-    image: nginx:alpine
-    container_name: nginx
-    restart: unless-stopped
-    tty: true
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - /root/registry/nginx/conf.d/:/etc/nginx/conf.d/
-      - /root/registry/nginx/ssl/:/etc/nginx/ssl/
-    networks:
-      - mynet
-#Docker Networks
+
 networks:
   mynet:
     driver: bridge
