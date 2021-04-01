@@ -24,7 +24,7 @@ create_registry_directories() {
     mkdir -p /root/nginx/ssl
   fi
 
-  cp ./registry.conf /root/nginx/conf.d
+  cp ./registry.conf /root/nginx/conf.d/
 }
 
 create_ssl_dir_and_file() {
@@ -53,6 +53,7 @@ create_registry_passwrd() {
   apt install apache2-utils -y
 
   htpasswd -Bc registry.passwd hacktor
+  mv ./registry.passwd /root/registry/auth/registry.passwd
 
   if [ ! -d "./tmp" ]
     then
@@ -68,8 +69,11 @@ create_registry_passwrd() {
 
   openssl x509 -in rootCA.pem -inform PEM -out ./tmp/rootCA.crt
 
-  cp ./tmp/rootCA.crt /etc/docker/certs.d/hacktor.com/
+  mkdir -p /etc/docker/certs.d/registry.hacktor.com/
+  mkdir -p /usr/share/ca-certificates/extra/
+  cp ./tmp/rootCA.crt /etc/docker/certs.d/registry.hacktor.com/
   cp ./tmp/rootCA.crt /usr/share/ca-certificates/extra/
+  rm -rf ./tmp
 
   dpkg-reconfigure ca-certificates
 }
