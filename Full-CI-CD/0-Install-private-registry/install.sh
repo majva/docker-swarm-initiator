@@ -24,3 +24,5 @@ initialize_server() {
 
 check_root_access
 initialize_server
+
+docker-compose up -d
