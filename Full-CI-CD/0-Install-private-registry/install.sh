@@ -20,9 +20,11 @@ create_registry_directories() {
     mkdir /root/registry
     mkdir /root/registry/nginx
     mkdir /root/registry/auth
-    mkdir -p /root/nginx/confd
+    mkdir -p /root/nginx/conf.d
     mkdir -p /root/nginx/ssl
   fi
+
+  cp ./registry.conf /root/nginx/conf.d
 }
 
 create_ssl_dir_and_file() {
