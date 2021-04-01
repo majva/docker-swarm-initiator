@@ -43,8 +43,8 @@ create_ssl_dir_and_file() {
     openssl dhparam -out /root/create-ssl/certs/fullchain.pem 2048
     openssl dhparam -out /root/create-ssl/keys/privkey.pem 2048
 
-    cp /root/create-ssl/certs/registry.pem /root/registry/nginx/ssl/
-    cp /root/create-ssl/keys/registrykey.pem /root/registry/nginx/ssl/
+    cp /root/create-ssl/certs/fullchain.pem /root/registry/nginx/ssl/
+    cp /root/create-ssl/keys/fullchain.pem /root/registry/nginx/ssl/
 }
 
 create_registry_passwrd() {
