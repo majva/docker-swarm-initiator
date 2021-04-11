@@ -8,7 +8,7 @@
         $ cd 0-Install-private-registry/
         $ bash install.sh
     (**) Note: when command line want from you to complete the certificate info please on FQDN enter you {domain} name that you want to publish the docker registry
-
+        (e.g: registry.hacktor.com)
     2- pull one simple container from docker hub and push it on your own docker registry
         $ docker pull hello-world
         $ docker tag  hello-world:latest localhost:5000/my-hello-world
