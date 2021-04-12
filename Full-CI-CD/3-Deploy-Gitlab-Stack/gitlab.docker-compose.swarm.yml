@@ -1,7 +1,7 @@
 version: '3.4'
 services:
   redis:
-    image: redis:5.0.9
+    image: registry.hacktor.com:5000/redis
     command:
     - --loglevel warning
     volumes:
@@ -12,7 +12,7 @@ services:
           - node.labels.gitlab.redis-data == true
 
   postgresql:
-    image: sameersbn/postgresql:11-20200524
+    image: registry.hacktor.com:5000/postgresql
     volumes:
     - postgresql-data:/var/lib/postgresql:Z
     environment:
@@ -26,7 +26,7 @@ services:
           - node.labels.gitlab.postgresql-data == true
 
   gitlab:
-    image: sameersbn/gitlab:13.4.3
+    image: registry.hacktor.com:5000/postgresql
     depends_on:
     - redis
     - postgresql
