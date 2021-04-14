@@ -2,7 +2,7 @@
 
 docker volume create gitlab-runner-data
 
-docker-compose -f gitlab-runner-compose.yml up -d
+docker-compose -f gitlab-runner-compose.yml up -d --scale gitlab-runners=5
 
 RUNNER_CONFIG_TEMPLATE=/tmp/runner-config.template.toml
 GITLAB_SHARED_REGISTRAION_TOKEN=JJi-hE-pb7AoT5s1-Z5X
