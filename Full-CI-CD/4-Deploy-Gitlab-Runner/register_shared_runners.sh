@@ -8,14 +8,18 @@ docker-compose -f gitlab-runner-compose.yml up -d --scale gitlab-runners=4
 #docker stack deploy -c gitlab-runners.docker-compose.swarm.yml gitlab-runners
 
 RUNNER_CONFIG_TEMPLATE=/tmp/runner-config.template.toml
+
+# go to admin pannel then go to runner, now put token below 
 GITLAB_SHARED_REGISTRAION_TOKEN=-VSxCGvxnBb2NNQYDsEV
 
 cat > $RUNNER_CONFIG_TEMPLATE << EOF
 [[runners]]
   [runners.docker]
     privileged = true
+    extra_hosts = ["gitlab.hacktor.com:192.168.14.145"]
 EOF
 
+# put your gitlab domain below 
 GITLAB_INSTANCE_URL=http://192.168.14.144/
 
 docker run --rm -it \
