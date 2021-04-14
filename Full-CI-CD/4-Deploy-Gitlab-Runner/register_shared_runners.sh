@@ -2,7 +2,8 @@
 
 docker volume create gitlab-runner-data
 
-docker-compose -f gitlab-runner-compose.yml up -d --scale gitlab-runners=5
+docker-compose -f gitlab-runner-compose.yml up -d --scale gitlab-runners=4
+
 #docker node update --label-add gitlab-runner.config=true $NODE_ID
 #docker stack deploy -c gitlab-runners.docker-compose.swarm.yml gitlab-runners
 
@@ -27,6 +28,6 @@ docker run --rm -it \
     --registration-token $GITLAB_SHARED_REGISTRAION_TOKEN \
     --executor "docker" \
     --docker-image docker:latest \
-    --description "optime_shared_runner" \
+    --description "hacktor_shared_runner" \
     --tag-list "docker,staging,production" \
     --run-untagged="true"
