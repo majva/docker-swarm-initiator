@@ -1,0 +1,15 @@
+version: '3.4'
+services:
+  gitlab-runners:
+    image: registry.hacktor.com:5000/gitlab-runner
+    volumes:
+    - gitlab-runner-data:/etc/gitlab-runner
+    - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - default
+    deploy:
+      replicas: 1
+
+volumes:
+  gitlab-runner-data:
+    external: true
