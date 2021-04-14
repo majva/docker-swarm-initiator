@@ -2,9 +2,9 @@
 
 docker volume create gitlab-runner-data
 
-#docker-compose -f gitlab-runner-compose.yml up -d --scale gitlab-runners=5
-docker node update --label-add gitlab-runner.config=true $NODE_ID
-docker stack deploy -c gitlab-runners.docker-compose.swarm.yml gitlab-runners
+docker-compose -f gitlab-runner-compose.yml up -d --scale gitlab-runners=5
+#docker node update --label-add gitlab-runner.config=true $NODE_ID
+#docker stack deploy -c gitlab-runners.docker-compose.swarm.yml gitlab-runners
 
 RUNNER_CONFIG_TEMPLATE=/tmp/runner-config.template.toml
 GITLAB_SHARED_REGISTRAION_TOKEN=-VSxCGvxnBb2NNQYDsEV
