@@ -20,7 +20,7 @@ cat > $RUNNER_CONFIG_TEMPLATE << EOF
 EOF
 
 # put your gitlab domain below 
-GITLAB_INSTANCE_URL=http://192.168.14.144/
+GITLAB_INSTANCE_URL=http://192.168.14.145/
 
 docker run --rm -it \
     -v gitlab-runner-data:/etc/gitlab-runner \
