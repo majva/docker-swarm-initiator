@@ -16,10 +16,10 @@ cat > $RUNNER_CONFIG_TEMPLATE << EOF
 [[runners]]
   pre_build_script = "export DOCKER_HOST=tcp://docker:2375"
   environment = ["DOCKER_DRIVER=overlay2", "DOCKER_TLS_CERTDIR="]
+  executor = "docker"
   [runners.docker]
     tls_verify = false
-    image = "docker:stable"
-    privileged = true
+    privileged = false
     extra_hosts = ["gitlab.hacktor.com:192.168.14.140"]
     volumes = ["/cache", "/var/run/docker.sock:/var/run/docker.sock"]
 EOF
