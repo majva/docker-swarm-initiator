@@ -14,6 +14,12 @@ GITLAB_SHARED_REGISTRAION_TOKEN=-VSxCGvxnBb2NNQYDsEV
 
 cat > $RUNNER_CONFIG_TEMPLATE << EOF
 [[runners]]
+  name = "some_name"
+  url = "https://my.url.com"
+  token = "a_token"
+  executor = "docker"
+  pre_build_script = "export DOCKER_HOST=tcp://docker:2375"
+  environment = ["DOCKER_DRIVER=overlay2", "DOCKER_TLS_CERTDIR="]
   [runners.docker]
     tls_verify = false
     image = "docker:stable"
