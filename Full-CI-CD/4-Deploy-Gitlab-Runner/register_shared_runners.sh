@@ -16,7 +16,7 @@ cat > $RUNNER_CONFIG_TEMPLATE << EOF
 [[runners]]
   [runners.docker]
     privileged = true
-    image = "docker:stable"
+    image = "registry.hacktor.com:5000/docker:stable"
     extra_hosts = ["gitlab.hacktor.com:192.168.14.140"]
 EOF
 
