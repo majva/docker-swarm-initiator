@@ -15,9 +15,11 @@ GITLAB_SHARED_REGISTRAION_TOKEN=-VSxCGvxnBb2NNQYDsEV
 cat > $RUNNER_CONFIG_TEMPLATE << EOF
 [[runners]]
   [runners.docker]
-    privileged = true
+    tls_verify = false
     image = "docker:stable"
+    privileged = true
     extra_hosts = ["gitlab.hacktor.com:192.168.14.140"]
+    volumes = ["/cache", "/var/run/docker.sock:/var/run/docker.sock"]
 EOF
 
 # put your gitlab domain below 
