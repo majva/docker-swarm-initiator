@@ -16,11 +16,11 @@ cat > $RUNNER_CONFIG_TEMPLATE << EOF
 [[runners]]
   [runners.docker]
     privileged = true
-    extra_hosts = ["gitlab.hacktor.com:192.168.14.145"]
+    extra_hosts = ["gitlab.hacktor.com:192.168.14.140"]
 EOF
 
 # put your gitlab domain below 
-GITLAB_INSTANCE_URL=http://192.168.14.145/
+GITLAB_INSTANCE_URL=http://192.168.14.140/
 
 docker run --rm -it \
     -v gitlab-runner-data:/etc/gitlab-runner \
