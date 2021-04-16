@@ -14,13 +14,14 @@ GITLAB_SHARED_REGISTRAION_TOKEN=-VSxCGvxnBb2NNQYDsEV
 
 cat > $RUNNER_CONFIG_TEMPLATE << EOF
 [[runners]]
-  environment = ["DOCKER_DRIVER=overlay2", "DOCKER_TLS_CERTDIR="]
   executor = "docker"
   [runners.docker]
     tls_verify = false
     privileged = true
     extra_hosts = ["gitlab.hacktor.com:192.168.14.140"]
     volumes = ["/certs/client", "/cache"]
+    [[runners.docker.services]]
+      name = "docker:dind"
 EOF
 
 # put your gitlab domain below 
