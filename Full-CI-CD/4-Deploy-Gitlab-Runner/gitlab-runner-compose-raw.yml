@@ -1,17 +1,12 @@
 version: '3.4'
 services:
   gitlab-runners:
-    image: ${DOCKER_REGISTRY_HOST?Variable not set}/gitlab-runner
+    image: sameersbn/gitlab-ci-multi-runner
     volumes:
     - gitlab-runner-data:/etc/gitlab-runner
     - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - default
-    deploy:
-      placement:
-        constraints:
-          - node.labels.gitlab-runner.config == true
-      replicas: 4
 
 volumes:
   gitlab-runner-data:

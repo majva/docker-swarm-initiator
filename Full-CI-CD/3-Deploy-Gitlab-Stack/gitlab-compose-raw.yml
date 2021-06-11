@@ -23,7 +23,7 @@ services:
   gitlab:
     restart: always
     image: sameersbn/gitlab
-    hostname: 'gitlab.exnance-infra.com'
+    hostname: 'gitlab.hacktor-infra.co'
     depends_on:
     - redis
     - postgresql
@@ -40,8 +40,7 @@ services:
       retries: 3
       start_period: 5m
     environment:
-    - DEBUG=false
-    
+    - DEBUG=false 
     - DB_ADAPTER=postgresql
     - DB_HOST=postgresql
     - DB_PORT=5432
@@ -58,7 +57,7 @@ services:
     - GITLAB_HTTPS=false
     - SSL_SELF_SIGNED=false
 
-    - GITLAB_HOST=gitlab.exnance-infra.com
+    - GITLAB_HOST=gitlab.hacktor-infra.co
     - GITLAB_PORT=80
     - GITLAB_SSH_PORT=10022
     - GITLAB_RELATIVE_URL_ROOT=/

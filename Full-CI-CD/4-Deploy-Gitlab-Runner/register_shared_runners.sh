@@ -30,7 +30,7 @@ GITLAB_INSTANCE_URL=http://192.168.14.140/
 docker run --rm -it \
     -v gitlab-runner-data:/etc/gitlab-runner \
     -v $RUNNER_CONFIG_TEMPLATE:$RUNNER_CONFIG_TEMPLATE \
-    registry.hacktor.com:5000/gitlab-runner register \
+    gitlab-runner register \
     --non-interactive \
     --template-config $RUNNER_CONFIG_TEMPLATE \
     --url $GITLAB_INSTANCE_URL \

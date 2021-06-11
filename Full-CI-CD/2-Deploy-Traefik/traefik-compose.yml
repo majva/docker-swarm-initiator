@@ -3,7 +3,7 @@ version: "3.3"
 services:
 
   traefik:
-    image: registry.hacktor.com:5000/traefik
+    image: ${DOCKER_REGISTRY_HOST?Variable not set}/traefik
     container_name: "traefik"
     command:
       - --providers.docker

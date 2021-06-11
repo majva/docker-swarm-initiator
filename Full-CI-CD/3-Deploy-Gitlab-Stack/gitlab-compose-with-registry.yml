@@ -3,7 +3,7 @@ version: '3.4'
 services:
   redis:
     restart: always
-    image: registry.hacktor.com:5000/redis
+    image: ${DOCKER_REGISTRY_HOST?Variable not set}/redis
     command:
     - --loglevel warning
     volumes:
@@ -11,7 +11,7 @@ services:
 
   postgresql:
     restart: always
-    image: registry.hacktor.com:5000/postgresql
+    image: ${DOCKER_REGISTRY_HOST?Variable not set}/postgresql
     volumes:
     - postgresql-data:/var/lib/postgresql:Z
     environment:
@@ -22,8 +22,8 @@ services:
 
   gitlab:
     restart: always
-    image: registry.hacktor.com:5000/gitlab-ce
-    # hostname: 'gitlab.hacktor.com'
+    image: ${DOCKER_REGISTRY_HOST?Variable not set}/gitlab-ce
+    hostname: '${GITLAB_HOST?Variable not set}'
     depends_on:
     - redis
     - postgresql
