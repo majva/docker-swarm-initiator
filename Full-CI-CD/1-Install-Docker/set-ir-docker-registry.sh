@@ -19,7 +19,7 @@ function write_docker_registry_url() {
 }
 
 if [ "$answer" != "${answer#[Yy]}" ] ;then
-    echo  $(write_docker_registry_url) > ./daemon.json
+    echo  $(write_docker_registry_url) > /etc/docker/daemon.json
 else
     echo 'so add this line to json => "registry-mirrors": ["https://dockerhub.ir"]'
 fi
