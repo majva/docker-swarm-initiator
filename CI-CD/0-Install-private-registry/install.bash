@@ -4,47 +4,54 @@
     refrence: https://phoenixnap.com/kb/set-up-a-private-docker-registry
 '
 
-if [ "EUID" -ne 0 ]
-  then echo "run this script on sudo permission"
-  exit
-fi
-
-source .bashrc
+check_root_access() {
+  if [ "$EUID" -ne 0 ]
+    then echo -e "\033[31mRun this script on sudo permission ..."
+    exit
+  fi
+}
 
 # step 1 - create working directory
 
-mkdir -p /root/docker/registry
+initialize_server() {
 
-mkdir -p /root/docker/registry/nginx && mkdir /root/docker/registry/auth
-mkdir -p /root/docker/registry/nginx/conf.d 
-mkdir -p /root/docker/registry/nginx/ssl
-mkdir -p /root/docker/registry/nginx/certs.d
+  mkdir -p /root/docker/registry
+  docker_registry_src = /root/docker/registry
 
-cp registry.conf /root/docker/registry/nginx/conf.d
+  mkdir -p $docker_registry_src/nginx && mkdir $docker_registry_src/auth
+  mkdir -p $docker_registry_src/nginx/conf.d 
+  mkdir -p $docker_registry_src/nginx/ssl
+  mkdir -p $docker_registry_src/nginx/certs.d
 
-apt install openssl -y
+  cp registry.conf $docker_registry_src/nginx/conf.d
 
-openssl req -newkey rsa:4096 -nodes -sha256 -keyout /root/docker/registry/nginx/certs.d/domain.key -x509 -days 365 -out /root/docker/registry/nginx/certs.d/domain.crt
+  apt install openssl -y
+  
+  openssl req -newkey rsa:4096 -nodes -sha256 -keyout $docker_registry_src/nginx/certs.d/domain.key -x509 -days 365 -out $docker_registry_src/nginx/certs.d/domain.crt
 
-openssl x509 -in /root/docker/registry/nginx/ssl/fullchain.pem -inform PEM -out /root/docker/registry/nginx/certs.d/domain.crt
-openssl x509 -in /root/docker/registry/nginx/ssl/privkey.pem -inform PEM -out /root/docker/registry/nginx/certs.d/domain.key
+  openssl x509 -in $docker_registry_src/nginx/ssl/fullchain.pem -inform PEM -out $docker_registry_src/nginx/certs.d/domain.crt
+  openssl x509 -in $docker_registry_src/nginx/ssl/privkey.pem -inform PEM -out $docker_registry_src/nginx/certs.d/domain.key
 
-htpasswd -Bc /root/docker/registry/auth/registry.passwd example
+  htpasswd -Bc $docker_registry_src/auth/registry.passwd example
 
-mkdir -p /root/docker/registry/ca
+  mkdir -p $docker_registry_src/ca
 
-openssl x509 -in /root/docker/registry/ca/rootCA.pem -inform PEM -out /root/docker/registry/ca/rootCA.crt
+  openssl x509 -in $docker_registry_src/ca/rootCA.pem -inform PEM -out $docker_registry_src/ca/rootCA.crt
 
-mkdir -p /etc/docker/certs.d
+  mkdir -p /etc/docker/certs.d
 
-cp /root/docker/registry/ca/rootCA.crt /etc/docker/certs.d/$REGISTRY_HOST
+  cp $docker_registry_src/ca/rootCA.crt /etc/docker/certs.d/registry.aranuma.com
 
-mkdir -p /usr/share/ca-certificates/extra/
+  mkdir -p /usr/share/ca-certificates/extra/
 
-cp /root/docker/registry/ca/rootCA.crt /usr/share/ca-certificates/extra/
+  cp $docker_registry_src/ca/rootCA.crt /usr/share/ca-certificates/extra/
 
-dpkg-reconfigure ca-certificates
+  dpkg-reconfigure ca-certificates
 
-systemctl restart docker
+  systemctl restart docker
+}
+
+check_root_access
+initialize_server
 
 docker-compose up -d
