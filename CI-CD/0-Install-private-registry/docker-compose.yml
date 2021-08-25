@@ -9,14 +9,14 @@ services:
     ports:
     - "5000:5000"
     environment:
-      - REGISTRY_AUTH: registry.passwd
-      - REGISTRY_AUTH_HTPASSWD_REALM: Registry-Realm
-      - REGISTRY_AUTH_HTPASSWD_PATH: /root/docker_registry/registry.passwd
-      - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
-      - REGISTRY_HTTP_ADDR: 0.0.0.0:443
-      - REGISTRY_HTTP_TLS_CERTIFICATE: /root/docker_registry/certs/domain.crt
-      - REGISTRY_HTTP_TLS_KEY: /root/docker_registry/certs/domain.key
-      - REGISTRY_HTTP_TLS_LETSENCRYPT_HOSTS: [registry.example.com]
+      REGISTRY_AUTH: registry.passwd
+      REGISTRY_AUTH_HTPASSWD_REALM: Registry-Realm
+      REGISTRY_AUTH_HTPASSWD_PATH: /root/docker_registry/registry.passwd
+      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
+      REGISTRY_HTTP_ADDR: 0.0.0.0:443
+      REGISTRY_HTTP_TLS_CERTIFICATE: /root/docker_registry/certs/domain.crt
+      REGISTRY_HTTP_TLS_KEY: /root/docker_registry/certs/domain.key
+      REGISTRY_HTTP_TLS_LETSENCRYPT_HOSTS: [registry.example.com]
     volumes:
       - /root/docker_registry/data:/var/lib/registry
       - /root/docker_registry/auth:/auth
