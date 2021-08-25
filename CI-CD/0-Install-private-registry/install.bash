@@ -17,10 +17,7 @@ initialize_server() {
 
   apt install openssl -y
 
-  touch /root/docker_registry/certs/domain.crt
-  touch /root/docker_registry/certs/domain.key
-
-  openssl req -newkey rsa:4096 -nodes -sha256 -keyout /root/docker_data/certs/domain.key -x509 -days 365 -out /root/docker_data/certs/domain.crt
+  openssl req -newkey rsa:4096 -nodes -sha256 -keyout /root/docker_registry/certs/domain.key -x509 -days 365 -out /root/docker_registry/certs/domain.crt
 
   htpasswd -Bc /root/docker_registry/auth/registry.passwd example
 
