@@ -1,5 +1,7 @@
-version: "3.3"
+version: '3.4'
+
 services:
+
 #Registry
   registry:
     image: registry:2
@@ -7,18 +9,32 @@ services:
     ports:
     - "5000:5000"
     environment:
-      REGISTRY_HTTP_TLS_CERTIFICATE: /certs/domain.crt
-      REGISTRY_HTTP_TLS_KEY: /certs/domain.key
+      REGISTRY_AUTH: htpasswd
+      REGISTRY_AUTH_HTPASSWD_REALM: Registry-Realm
+      REGISTRY_AUTH_HTPASSWD_PATH: /auth/registry.passwd
+      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
     volumes:
-      - /root/docker_data/image:/var/lib/registry
-      - /root/docker_data/certs:/certs
+      - /root/docker_registry/data:/data
+      - /root/docker/registry/auth:/auth
     networks:
-      - mynet
+      - registry-net
 
+#Nginx Service
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+      - ./nginx/ssl/:/etc/nginx/ssl/
+    networks:
+      - registry-net
+
+#Docker Networks
 networks:
-  mynet:
+  registry-net:
     driver: bridge
-#Volumes
-volumes:
-  registrydata:
-    driver: local
