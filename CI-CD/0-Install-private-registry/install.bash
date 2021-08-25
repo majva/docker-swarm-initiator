@@ -49,6 +49,4 @@ dpkg-reconfigure ca-certificates
 
 systemctl restart docker
 
-initialize_server
-
 docker-compose up -d
