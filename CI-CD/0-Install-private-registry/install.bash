@@ -4,12 +4,10 @@
     refrence: https://phoenixnap.com/kb/set-up-a-private-docker-registry
 '
 
-check_root_access() {
-  if [ "$EUID" -ne 0 ]
-    then echo -e "\033[31mRun this script on sudo permission ..."
-    exit
-  fi
-}
+if [ "$EUID" -ne 0 ]
+  then echo "run this script on sudo permission"
+  exit
+fi
 
 source .bashrc
 
@@ -48,7 +46,6 @@ initialize_server() {
   systemctl restart docker
 }
 
-check_root_access
 initialize_server
 
 docker-compose up -d
