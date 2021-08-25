@@ -9,7 +9,7 @@ services:
     ports:
     - "5000:5000"
     environment:
-      - REGISTRY_AUTH: htpasswd
+      - REGISTRY_AUTH: registry.passwd
       - REGISTRY_AUTH_HTPASSWD_REALM: Registry-Realm
       - REGISTRY_AUTH_HTPASSWD_PATH: /root/docker_registry/registry.passwd
       - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
