@@ -18,7 +18,7 @@ services:
       - REGISTRY_HTTP_TLS_KEY: /root/docker_registry/certs/domain.key
       - REGISTRY_HTTP_TLS_LETSENCRYPT_HOSTS: [registry.example.com]
     volumes:
-      - /root/docker_registry/data:/data
+      - /root/docker_registry/data:/var/lib/registry
       - /root/docker_registry/auth:/auth
       - /root/docker_registry/certs:/certs
     networks:
