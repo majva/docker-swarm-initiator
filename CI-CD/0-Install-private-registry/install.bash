@@ -16,7 +16,14 @@ initialize_server() {
 
   apt install openssl -y
 
-  openssl req -newkey rsa:4096 -nodes -sha256 -keyout /root/docker_data/certs/domain.key -x509 -days 365 -out /root/docker_data/certs/domain.crt
+  openssl genrsa -out /root/docker_data/certs/domain.key
+
+  openssl req -new -key /root/docker_data/certs/domain.key -out /root/docker_data/certs/request.csr
+
+  openssl x509 -req -days 365 -in /root/docker_data/certs/request.csr -signkey /root/docker_data/certs/domain.key -out /root/docker_data/certs/domain.key
+
+
+  # openssl req -newkey rsa:4096 -nodes -sha256 -keyout /root/docker_data/certs/domain.key -x509 -days 365 -out /root/docker_data/certs/domain.crt
 
   mkdir -p /root/docker_data/image  
 

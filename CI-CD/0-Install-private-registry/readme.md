@@ -22,3 +22,10 @@
     
     4- now you can pull repository from docker registry with this command
         $ docker pull yourdomain.com:5000/my-hello-world
+
+# if certificates are not provided, then you can disable certificates section 
+
+    1- Create daemon.json file in /etc/docker/daemon.json then add this line to it:
+        {
+            "insecure-registries" : ["registry.aranuma.com:5000"]
+        }
