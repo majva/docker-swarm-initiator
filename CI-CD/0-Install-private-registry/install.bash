@@ -12,16 +12,13 @@ check_root_access() {
 }
 
 initialize_server() {
-  mkdir -p /root/docker_registry/certs
-  mkdir -p /root/docker_registry/auth
+  mkdir -p /root/docker_data/certs
 
   apt install openssl -y
 
-  openssl req -newkey rsa:4096 -nodes -sha256 -keyout /root/docker_registry/certs/domain.key -x509 -days 365 -out /root/docker_registry/certs/domain.crt
+  openssl req -newkey rsa:4096 -nodes -sha256 -keyout /root/docker_data/certs/domain.key -x509 -days 365 -out /root/docker_data/certs/domain.crt
 
-  htpasswd -Bc /root/docker_registry/auth/registry.passwd example
-
-  mkdir -p /root/docker_registry/data
+  mkdir -p /root/docker_data/image  
 
 }
 
@@ -29,4 +26,3 @@ check_root_access
 initialize_server
 
 docker-compose up -d
-

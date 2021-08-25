@@ -1,7 +1,5 @@
-version: '3.4'
-
+version: "3.3"
 services:
-
 #Registry
   registry:
     image: registry:2
@@ -9,18 +7,18 @@ services:
     ports:
     - "5000:5000"
     environment:
-      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
       REGISTRY_HTTP_TLS_CERTIFICATE: /certs/domain.crt
       REGISTRY_HTTP_TLS_KEY: /certs/domain.key
     volumes:
-      - /root/docker_registry/data:/var/lib/registry
-      - /root/docker_registry/auth:/auth
-      - /root/docker_registry/certs:/certs
+      - /root/docker_data/image:/var/lib/registry
+      - /root/docker_data/certs:/certs
     networks:
-      - registry-net
+      - mynet
 
-    
-#Docker Networks
 networks:
-  registry-net:
+  mynet:
     driver: bridge
+#Volumes
+volumes:
+  registrydata:
+    driver: local
