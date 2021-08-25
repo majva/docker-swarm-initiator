@@ -1,0 +1,253 @@
+version: '3.4'
+services:
+  redis:
+    image: ${DOCKER_REGISTRY_HOST?Variable not set}/redis
+    command:
+    - --loglevel warning
+    volumes:
+    - redis-data:/var/lib/redis:Z
+    deploy:
+      placement:
+        constraints:
+          - node.labels.gitlab.redis-data == true
+
+  postgresql:
+    image: ${DOCKER_REGISTRY_HOST?Variable not set}/postgresql
+    volumes:
+    - postgresql-data:/var/lib/postgresql:Z
+    environment:
+    - DB_USER=gitlab
+    - DB_PASS=P2E0lwGQfeSCctTh
+    - DB_NAME=gitlabhq_production
+    - DB_EXTENSION=pg_trgm,btree_gist
+    deploy:
+      placement:
+        constraints:
+          - node.labels.gitlab.postgresql-data == true
+
+  gitlab:
+    image: ${DOCKER_REGISTRY_HOST?Variable not set}/gitlab
+    depends_on:
+    - redis
+    - postgresql
+    ports:
+      - target: 22
+        published: 22
+        mode: host
+    volumes:
+    - gitlab-data:/home/git/data:Z
+    - certs-data:/certs
+    healthcheck:
+      test: ["CMD", "/usr/local/sbin/healthcheck"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 1m
+    networks:
+      # To communicate with other services in this stack
+      - default
+      # To be available for the public Traefik
+      - traefik-public
+    environment:
+      - DEBUG=false
+
+      - GITLAB_REGISTRY_ENABLED=true
+      - GITLAB_REGISTRY_HOST=${REGISTRY_HOST?Variable not set}
+      - GITLAB_REGISTRY_PORT=443
+      - GITLAB_REGISTRY_API_URL=http://registry:5000
+      - GITLAB_REGISTRY_KEY_PATH=/certs/registry.key
+      - GITLAB_REGISTRY_ISSUER=gitlab-issuer
+      - GITLAB_REGISTRY_GENERATE_INTERNAL_CERTIFICATES=true
+
+      - GITLAB_SIGNUP_ENABLED=true
+
+      - DB_ADAPTER=postgresql
+      - DB_HOST=postgresql
+      - DB_PORT=5432
+      - DB_USER=gitlab
+      - DB_PASS=P2E0lwGQfeSCctTh
+      - DB_NAME=gitlabhq_production
+
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+
+      - TZ=Asia/Tehran
+      - GITLAB_TIMEZONE=Tehran
+
+      - GITLAB_HTTPS=true
+      - SSL_SELF_SIGNED=false
+
+      - GITLAB_HOST=${GITLAB_HOST?Variable not set}
+      - GITLAB_PORT=443
+      - GITLAB_SSH_PORT=10022
+      - GITLAB_SSH_LISTEN_PORT=10022
+      - GITLAB_RELATIVE_URL_ROOT=
+      - GITLAB_SECRETS_DB_KEY_BASE=tpbkIxP3QARX8wV6
+      - GITLAB_SECRETS_SECRET_KEY_BASE=xUtJC0QimOfqyryu
+      - GITLAB_SECRETS_OTP_KEY_BASE=E5iMX1c4mIDNKZ2p
+
+      - GITLAB_ROOT_PASSWORD=${GITLAB_ROOT_PASSWORD?Variable not set}
+      - GITLAB_ROOT_EMAIL=${GITLAB_ROOT_EMAIL?Variable not set}
+
+      - GITLAB_NOTIFY_ON_BROKEN_BUILDS=true
+      - GITLAB_NOTIFY_PUSHER=false
+
+      - GITLAB_EMAIL=${GITLAB_EMAIL?Variable not set}
+      - GITLAB_EMAIL_REPLY_TO=${GITLAB_EMAIL_REPLY_TO?Variable not set}
+      - GITLAB_INCOMING_EMAIL_ADDRESS=${GITLAB_EMAIL_REPLY_TO?Variable not set}
+
+      - GITLAB_BACKUP_SCHEDULE=daily
+      - GITLAB_BACKUP_TIME=01:00
+
+      - SMTP_ENABLED=false
+      - SMTP_DOMAIN=hacktor.local
+      - SMTP_HOST=smtp.zoho.com
+      - SMTP_PORT=587
+      - SMTP_USER=gitlab@hacktor.local
+      - SMTP_PASS=nX7Rd1z52GV9mgSt@
+      - SMTP_STARTTLS=true
+      - SMTP_AUTHENTICATION=plain
+
+      - IMAP_ENABLED=false
+      - IMAP_HOST=imap.gmail.com
+      - IMAP_PORT=993
+      - IMAP_USER=mailer@example.com
+      - IMAP_PASS=password
+      - IMAP_SSL=true
+      - IMAP_STARTTLS=false
+
+      - OAUTH_ENABLED=false
+      - OAUTH_AUTO_SIGN_IN_WITH_PROVIDER=
+      - OAUTH_ALLOW_SSO=
+      - OAUTH_BLOCK_AUTO_CREATED_USERS=true
+      - OAUTH_AUTO_LINK_LDAP_USER=false
+      - OAUTH_AUTO_LINK_SAML_USER=false
+      - OAUTH_EXTERNAL_PROVIDERS=
+
+      - OAUTH_CAS3_LABEL=cas3
+      - OAUTH_CAS3_SERVER=
+      - OAUTH_CAS3_DISABLE_SSL_VERIFICATION=false
+      - OAUTH_CAS3_LOGIN_URL=/cas/login
+      - OAUTH_CAS3_VALIDATE_URL=/cas/p3/serviceValidate
+      - OAUTH_CAS3_LOGOUT_URL=/cas/logout
+
+      - OAUTH_GOOGLE_API_KEY=
+      - OAUTH_GOOGLE_APP_SECRET=
+      - OAUTH_GOOGLE_RESTRICT_DOMAIN=
+
+      - OAUTH_FACEBOOK_API_KEY=
+      - OAUTH_FACEBOOK_APP_SECRET=
+
+      - OAUTH_TWITTER_API_KEY=
+      - OAUTH_TWITTER_APP_SECRET=
+
+      - OAUTH_GITHUB_API_KEY=
+      - OAUTH_GITHUB_APP_SECRET=
+      - OAUTH_GITHUB_URL=
+      - OAUTH_GITHUB_VERIFY_SSL=
+
+      - OAUTH_GITLAB_API_KEY=
+      - OAUTH_GITLAB_APP_SECRET=
+
+      - OAUTH_BITBUCKET_API_KEY=
+      - OAUTH_BITBUCKET_APP_SECRET=
+
+      - OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL=
+      - OAUTH_SAML_IDP_CERT_FINGERPRINT=
+      - OAUTH_SAML_IDP_SSO_TARGET_URL=
+      - OAUTH_SAML_ISSUER=
+      - OAUTH_SAML_LABEL="Our SAML Provider"
+      - OAUTH_SAML_NAME_IDENTIFIER_FORMAT=urn:oasis:names:tc:SAML:2.0:nameid-format:transient
+      - OAUTH_SAML_GROUPS_ATTRIBUTE=
+      - OAUTH_SAML_EXTERNAL_GROUPS=
+      - OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL=
+      - OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME=
+      - OAUTH_SAML_ATTRIBUTE_STATEMENTS_USERNAME=
+      - OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME=
+      - OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME=
+
+      - OAUTH_CROWD_SERVER_URL=
+      - OAUTH_CROWD_APP_NAME=
+      - OAUTH_CROWD_APP_PASSWORD=
+
+      - OAUTH_AUTH0_CLIENT_ID=
+      - OAUTH_AUTH0_CLIENT_SECRET=
+      - OAUTH_AUTH0_DOMAIN=
+      - OAUTH_AUTH0_SCOPE=
+
+      - OAUTH_AZURE_API_KEY=
+      - OAUTH_AZURE_API_SECRET=
+      - OAUTH_AZURE_TENANT_ID=
+
+      - RACK_ATTACK_ENABLED=false
+    deploy:
+      placement:
+        constraints:
+          - node.labels.gitlab.certs-data == true
+          - node.labels.gitlab.gitlab-data == true
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.gitlab-gitlab-http.rule=Host(`${GITLAB_HOST?Variable not set}`)
+        - traefik.http.routers.gitlab-gitlab-http.entrypoints=http
+        - traefik.http.routers.gitlab-gitlab-http.middlewares=https-redirect
+        - traefik.http.routers.gitlab-gitlab-https.rule=Host(`${GITLAB_HOST?Variable not set}`)
+        - traefik.http.routers.gitlab-gitlab-https.entrypoints=https
+        - traefik.http.routers.gitlab-gitlab-https.tls=true
+        - traefik.http.routers.gitlab-gitlab-https.tls.certresolver=le
+        - traefik.http.services.gitlab-gitlab.loadbalancer.server.port=80
+
+  registry:
+    image: registry:2
+    depends_on:
+      - gitlab
+    volumes:
+      - registry-data:/registry
+      - certs-data:/certs
+    environment:
+      - REGISTRY_LOG_LEVEL=info
+      - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/registry
+      - REGISTRY_AUTH_TOKEN_REALM=https://${GITLAB_HOST?Variable not set}/jwt/auth
+      - REGISTRY_AUTH_TOKEN_SERVICE=container_registry
+      - REGISTRY_AUTH_TOKEN_ISSUER=gitlab-issuer
+      - REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE=/certs/registry.crt
+      - REGISTRY_STORAGE_DELETE_ENABLED=true
+    deploy:
+      placement:
+        constraints:
+          - node.labels.gitlab.certs-data == true
+          - node.labels.gitlab.registry-data == true
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.gitlab-registry-http.rule=Host(`${REGISTRY_HOST?Variable not set}`)
+        - traefik.http.routers.gitlab-registry-http.entrypoints=http
+        - traefik.http.routers.gitlab-registry-http.middlewares=https-redirect
+        - traefik.http.routers.gitlab-registry-https.rule=Host(`${REGISTRY_HOST?Variable not set}`)
+        - traefik.http.routers.gitlab-registry-https.entrypoints=https
+        - traefik.http.routers.gitlab-registry-https.tls=true
+        - traefik.http.routers.gitlab-registry-https.tls.certresolver=le
+        - traefik.http.services.gitlab-registry.loadbalancer.server.port=5000
+    networks:
+      # To communicate with other services in this stack
+      - default
+      # To be available for the public Traefik
+      - traefik-public
+
+volumes:
+  redis-data:
+    external: true
+  postgresql-data:
+    external: true
+  gitlab-data:
+    external: true
+  registry-data:
+    external: true
+  certs-data:
+    external: true
+
+networks:
+  traefik-public:
+    external: true

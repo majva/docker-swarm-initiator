@@ -1,0 +1,12 @@
+version: '3.4'
+
+services:
+    BaGet:
+        container_name: BaGet
+        image: loicsharma/baget:latest
+        env_file: ./env.file
+        volumes:
+            - /var/docker_volumes/baget-data:/var/baget
+        ports:
+            - 5555:80
+        restart: always

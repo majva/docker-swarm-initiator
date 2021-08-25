@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  redis:
+    image: redis
+    restart: always
+    container_name: redis
+    ports:
+      - 6379:6379
+    labels:
+      NAME: "redis"
+    # networks:
+    #   - mynetword

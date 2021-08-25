@@ -1,0 +1,2 @@
+export ADMIN_USER=admin
+export ADMIN_PASSWORD=admin

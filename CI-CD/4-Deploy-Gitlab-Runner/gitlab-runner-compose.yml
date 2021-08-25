@@ -1,0 +1,13 @@
+version: '3.4'
+services:
+  gitlab-runners:
+    image: ${DOCKER_REGISTRY_HOST?Variable not set}/gitlab-runner
+    volumes:
+    - gitlab-runner-data:/etc/gitlab-runner
+    - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - default
+
+volumes:
+  gitlab-runner-data:
+    external: true

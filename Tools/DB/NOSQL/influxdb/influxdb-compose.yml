@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  influxdb:
+    image: influxdb:latest
+    restart: always
+    ports:
+      - '8086:8086'
+    volumes:
+      - influxdb-storage:/var/docker_data/influxdb
+    environment:
+      - INFLUXDB_DB=db0
+      - INFLUXDB_ADMIN_USER=${INFLUXDB_USERNAME}
+      - INFLUXDB_ADMIN_PASSWORD=${INFLUXDB_PASSWORD}
+
+volumes:
+  influxdb-storage:

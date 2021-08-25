@@ -1,0 +1,35 @@
+version: "3.3"
+
+services:
+
+  traefik:
+    image: ${DOCKER_REGISTRY_HOST?Variable not set}/traefik
+    container_name: "traefik"
+    command:
+      - --providers.docker
+      - --providers.docker.constraints=Label(`traefik.constraint-label`, `traefik-public`)
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.http.address=:80
+      - --entrypoints.https.address=:443
+      - --entrypoints.http.address=:8080
+      - --accesslog
+      - --log
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-public
+      - traefik.http.routers.traefik-public-https.rule=Host(`traefik.hacktor.com`)
+    ports:
+      - 8081:80
+      - 8080:8080
+      - 8082:443
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - ./traefik.yml:/etc/traefik/traefik.yml
+    networks:
+      # Use the public network created to be shared between Traefik and
+      # any other service that needs to be publicly available with HTTPS
+      - traefik-public
+
+networks:
+  traefik-public:
+    external: true
