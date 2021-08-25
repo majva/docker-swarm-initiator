@@ -16,7 +16,8 @@ source .bashrc
 initialize_server() {
 
   mkdir -p /root/docker/registry
-  docker_registry_src = /root/docker/registry
+  set -e
+  docker_registry_src=/root/docker/registry
 
   mkdir -p $docker_registry_src/nginx && mkdir $docker_registry_src/auth
   mkdir -p $docker_registry_src/nginx/conf.d 
