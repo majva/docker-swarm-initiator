@@ -5,12 +5,17 @@ services:
     image: redis
     restart: always
     container_name: redis
+    command: redis-server --appendonly yes
     ports:
       - 6379:6379
     labels:
       NAME: "redis"
     networks:
       - my-network
+    # volumes:
+    #   - /var/docker_volumes/redis:/data
+    #   - ./redis.conf:/usr/local/etc/redis/redis.conf
+    # entrypoint: redis-server /usr/local/etc/redis/redis.conf
 
 networks:
   my-network: 
