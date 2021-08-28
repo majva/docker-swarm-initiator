@@ -11,4 +11,6 @@ check_root_access
 
 source .bashrc
 
+docker network create portainer
+
 docker-compose -f portainer.yml up -d
