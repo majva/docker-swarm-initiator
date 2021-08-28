@@ -9,5 +9,9 @@ services:
       - 6379:6379
     labels:
       NAME: "redis"
-    # networks:
-    #   - mynetword
+    networks:
+      - my-network
+
+networks:
+  my-network: 
+    external: true

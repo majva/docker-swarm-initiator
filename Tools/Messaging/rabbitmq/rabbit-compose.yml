@@ -17,6 +17,10 @@ services:
     volumes:
         - /var/docker_volumes/rabbitmq/data/:/var/lib/rabbitmq/
         - /var/docker_volumes/rabbitmq/log/:/var/log/rabbitmq
-    # networks:
-    #   - mynetwork
+    networks:
+      - my-network
     restart: always
+
+networks:
+  my-network: 
+    external: true
