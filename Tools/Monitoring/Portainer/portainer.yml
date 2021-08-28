@@ -24,3 +24,8 @@ services:
     networks:
       - portainer
     restart: always
+
+
+networks:
+  portainer: 
+    external: true
