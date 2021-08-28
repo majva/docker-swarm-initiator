@@ -12,8 +12,8 @@ services:
       NAME: "redis"
     networks:
       - my-network
-    # volumes:
-    #   - /var/docker_volumes/redis:/data
+    volumes:
+      - /var/docker_volumes/redis:/data
     #   - ./redis.conf:/usr/local/etc/redis/redis.conf
     # entrypoint: redis-server /usr/local/etc/redis/redis.conf
 
