@@ -3,7 +3,8 @@ version: "3.3"
 services:
 
   traefik:
-    image: ${DOCKER_REGISTRY_HOST?Variable not set}/traefik
+    # image: ${DOCKER_REGISTRY_HOST?Variable not set}/traefik
+    image: traefik
     container_name: "traefik"
     command:
       - --providers.docker

@@ -12,4 +12,4 @@ source .bashrc
 
 # Deploy the stack
 echo "[+] deploying traefik ..."
-docker stack deploy -c traefik.docker-compose.swarm.yml traefik > log
+docker stack deploy -c traefik-compose.swarm.yml traefik > log

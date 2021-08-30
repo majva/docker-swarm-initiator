@@ -22,4 +22,4 @@ docker node update --label-add gitlab.registry-data=true $NODE_ID
 # Deploy Stack
 
 echo "deploing stack ..."
-docker stack deploy -c gitlab.docker-compose.swarm.yml gitlab > logs
+docker stack deploy -c gitlab-compose.swarm.yml gitlab > logs
