@@ -5,7 +5,7 @@
 <--
     ExecStart=/usr/bin/dockerd fd://
     with
-    ExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:2375
+    ExecStart=/usr/bin/dockerd -H tcp://<Your-Host-IP>:2375 -H unix:///var/run/docker.sock 
 -->
 ========================================================================
 - then make this file /etc/init.d/docker and then paste this below line

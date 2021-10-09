@@ -1,13 +1,12 @@
 version: '3.4'
 services:
-  gitlab-runners:
-    image: sameersbn/gitlab-ci-multi-runner
+  image: sameersbn/gitlab-ci-multi-runner
     volumes:
-    - gitlab-runner-data:/etc/gitlab-runner
-    - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - default
-
-volumes:
-  gitlab-runner-data:
-    external: true
+      - /var/docker_volumes/gitlab-runner:/home/gitlab_ci_multi_runner/data
+    environment:
+      - CI_SERVER_URL=
+      - RUNNER_TOKEN=
+      - RUNNER_DESCRIPTION=
+      - RUNNER_EXECUTOR=shell
+      - PRIVILEGED=true
+    restart: always

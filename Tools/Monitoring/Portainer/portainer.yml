@@ -15,7 +15,8 @@ services:
 
   portainer:
     image: ${DOCKER_REGISTRY_HOST?Variable not set}/portainer/portainer
-#    command: -H tcp://tasks.agent:9001 --tlsskipverify
+    # command: -H tcp://tasks.agent:9001 --tlsskipverify
+    # command: -H unix:///var/run/docker.sock
     ports:
       - "9000:9000"
       - "8000:8000"
@@ -24,7 +25,6 @@ services:
     networks:
       - portainer
     restart: always
-
 
 networks:
   portainer: 
