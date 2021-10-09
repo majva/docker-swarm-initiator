@@ -1,6 +1,6 @@
 
 # for gitlab 
-docker pull sameersbn/gitlab
+docker pull gitlab/gitlab-ce
 
 # for redis
 docker pull redis
@@ -9,7 +9,7 @@ docker pull redis
 docker pull sameersbn/postgresql
 
 # for gitlab-runner
-docker pull sameersbn/gitlab-ci-multi-runner
+docker pull gitlab/gitlab-runner
 
 # for portainer
 docker pull portainer/agent
