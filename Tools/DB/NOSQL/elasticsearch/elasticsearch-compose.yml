@@ -22,5 +22,5 @@ services:
       - elastic
 
 networks:
-  - elastic:
+  elastic:
     external: true
