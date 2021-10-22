@@ -15,8 +15,12 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - /var/docker_volumes/elasticsearch/usr/share/elasticsearch/data
+      - /var/docker_volumes/elasticsearch:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
     networks:
       - elastic
+
+networks:
+  - elastic:
+    external: true
