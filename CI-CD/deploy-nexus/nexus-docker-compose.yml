@@ -2,9 +2,24 @@ version: "3.4"
 
 services:
   nexus:
-    image: sonatype/nexus3
+    build: sonatype/nexus3
+    ports:
+      - "8082:8081"
+      - "5000:5000"
     volumes:
       - "/var/docker_volumes/nexus:/nexus-data"
+    container_name: nexus
+    restart: always
+
+  registry_ui:
+    image: konradkleine/docker-registry-frontend:v2
     ports:
-      - "8005:8081"
-  
+      - 8888:80
+    env_file:
+      - .env
+    depends_on:
+      - nexus
+    environment:
+      ENV_DOCKER_REGISTRY_HOST: nexus
+      ENV_DOCKER_REGISTRY_PORT: 5000
+    restart: always
