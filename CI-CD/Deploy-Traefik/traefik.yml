@@ -1,0 +1,11 @@
+## traefik.yml
+
+# Docker configuration backend
+#providers:
+#  docker:
+#    defaultRule: "Host(`traefik.hacktor.com`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+
+# API and dashboard configuration
+api:
+  dashboard: true
+  insecure: true
