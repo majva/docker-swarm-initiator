@@ -42,7 +42,7 @@ services:
     ports:
       - '8085:8080'
     environment:
-      - 'JIRA_DATABASE_URL=postgresql://jiradbuser@postgre_atlassian/jiradb'
+      - 'JIRA_DATABASE_URL=postgresql://postgres:QksuYejx_speI93@postgre_atlassian/jiradb'
       - 'JIRA_DB_PASSWORD=Jiaia921843kfaHWy'
       - 'CATALINA_OPTS= -Xms2g -Xmx3g'
       - 'JVM_MINIMUM_MEMORY=2g'
