@@ -2,7 +2,7 @@ version: '3'
 
 services:
   focalboard:
-    image: blacklabelops/postgres
+    image: mattermost/focalboard
     container_name: focalboard
     restart: unless-stopped
     ports:
