@@ -4,6 +4,7 @@ services:
   openproject:
     container_name: openproject
     image: openproject/community:7
+    restart: always
     ports:
       - 8080:80
     volumes:
