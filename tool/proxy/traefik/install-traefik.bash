@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source .bashrc
+
 func_check_permission() {
   if [ "$EUID" -ne 0 ]
     then echo "run this script on sudo permission"
@@ -47,8 +49,6 @@ func_config_traefik() {
 }
 
 func_check_permission
-
-source .bashrc
 
 func_create_certs
 func_config_traefik

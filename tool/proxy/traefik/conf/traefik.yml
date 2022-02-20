@@ -1,8 +1,10 @@
-entrypoints:
-  # [...]
-  internal:
-    address: ":8888"
-#API and dashboard configuration
+# traefik.yml
+# Docker configuration backend
+providers:
+  docker:
+    defaultRule: "Host(`${DOMAIN?Traefik domain variable not set}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+
+# API and dashboard configuration
 api:
   dashboard: true
   insecure: true
