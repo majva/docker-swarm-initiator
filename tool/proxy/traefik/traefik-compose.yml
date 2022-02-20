@@ -1,15 +1,14 @@
 version: "3.4"
 
+volumes:
+  traefik-acme:
+    name: traefik-acme
+
+networks:
+  web-net:
+    external: true
+
 services:
-
-  volumes:
-    traefik-acme:
-      name: traefik-acme
-
-  networks:
-    web-net:
-      external: true
-
   traefik:
     image: traefik:2.6.1
     container_name: traefik
