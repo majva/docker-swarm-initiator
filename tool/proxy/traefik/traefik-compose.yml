@@ -18,6 +18,7 @@ services:
       - --log.format=json
       - --api=true
       - --api.insecure=true
+      - --api.dashboard=true
       - --providers.docker.endpoint=unix:///var/run/docker.sock
       - --providers.docker.exposedbydefault=false
       - --providers.docker.network=web-net
@@ -32,7 +33,7 @@ services:
       - --providers.docker.exposedbydefault=false
       - --entrypoints.http.address=:80
       - --entrypoints.https.address=:443
-      - --entrypoints.http.address=:8080
+      - --entrypoints.http.address=:8081
       - --certificatesresolvers.mycert.acme.email=${EMAIL?email variable not set}
     labels:
       - "traefik.enable=true"
