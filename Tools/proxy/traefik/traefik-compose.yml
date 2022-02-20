@@ -1,0 +1,64 @@
+version: "3.4"
+
+services:
+
+  volumes:
+    traefik-acme:
+      name: traefik-acme
+
+  networks:
+    web-net:
+      external: true
+
+  traefik:
+    image: traefik:2.6.1
+    container_name: traefik
+    command:
+      - --log.level=INFO
+      - --log.filepath=/log-file.log
+      - --log.format=json
+      - --api=true
+      - --api.insecure=true
+      - --providers.docker.endpoint=unix:///var/run/docker.sock
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.network=web-net
+      - --ping=true
+      - --accesslog=true
+      - --accesslog.bufferingsize=100
+      - --providers.docker
+      - --certificatesresolvers.mycert.acme.storage=/acme/acme.json
+      - --certificatesresolvers.mycert.acme.tlschallenge=true
+      - --providers.file.filename=/conf/config.yml
+      - --providers.docker.constraints=Label(`traefik.constraint-label`, `traefik-public`)
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.http.address=:80
+      - --entrypoints.https.address=:443
+      - --entrypoints.http.address=:8080
+      - --certificatesresolvers.mycert.acme.email=${EMAIL?email variable not set}
+   labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web_net"
+      - "traefik.http.routers.traefik.entrypoints=http"
+      - "traefik.http.routers.traefik.rule=Host(`${DOMAIN?Traefik domain variable not set}`)"
+      - "traefik.http.routers.traefik.middlewares=https-redirect"
+      - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.web-auth.basicauth.users=${USERNAME?username variable not set}:${PASSWORD?password variable not set}"
+      - "traefik.http.routers.traefik-secure.middlewares=web-auth"
+      - "traefik.http.routers.traefik-secure.entrypoints=https"
+      - "traefik.http.routers.traefik-secure.rule=Host(`${DOMAIN?Traefik domain variable not set}`)"
+      - "traefik.http.routers.traefik-secure.tls=true"
+      - "traefik.http.routers.traefik-secure.tls.options=default"
+      - "traefik.http.routers.traefik-secure.tls.certresolver=mycert"
+      - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik-acme:/acme
+      - ./traefik:/traefik
+    networks:
+      # Use the public network created to be shared between Traefik and
+      # any other service that needs to be publicly available with HTTPS
+      - traefik-public
