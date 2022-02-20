@@ -29,11 +29,11 @@ services:
       - --certificatesresolvers.mycert.acme.storage=/acme/acme.json
       - --certificatesresolvers.mycert.acme.tlschallenge=true
       - --providers.file.filename=/conf/config.yml
-      - --providers.docker.constraints=Label(`traefik.constraint-label`, `traefik-public`)
+      - --providers.docker.constraints=Label(`traefik.constraint-label`, `web-net`)
       - --providers.docker.exposedbydefault=false
       - --entrypoints.http.address=:80
       - --entrypoints.https.address=:443
-      - --entrypoints.http.address=:8081
+      - --entrypoints.http.address=:8080
       - --certificatesresolvers.mycert.acme.email=${EMAIL?email variable not set}
     labels:
       - "traefik.enable=true"
@@ -51,9 +51,9 @@ services:
       - "traefik.http.routers.traefik-secure.tls.certresolver=mycert"
       - "traefik.http.services.traefik.loadbalancer.server.port=8080"
     ports:
-      - 80:80
-      - 8080:8081
-      - 443:443
+      - 8080:8080
+      - 8081:80
+      - 8082:443
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
