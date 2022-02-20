@@ -23,7 +23,6 @@ services:
       - --ping=true
       - --accesslog=true
       - --accesslog.bufferingsize=100
-      - --providers.docker
       - --certificatesresolvers.mycert.acme.storage=/acme/acme.json
       - --certificatesresolvers.mycert.acme.tlschallenge=true
       - --providers.file.filename=/conf/config.yml
@@ -48,9 +47,8 @@ services:
       - "traefik.http.routers.traefik-secure.tls.certresolver=mycert"
       - "traefik.http.services.traefik.loadbalancer.server.port=8080"
     ports:
-      - 8081:80
-      - 8082:443
-      - 8083:8081
+      - 80:80
+      - 443:443
     volumes:
       - ./conf/traefik.yml:/etc/traefik/traefik.yml
       - /etc/localtime:/etc/localtime:ro
