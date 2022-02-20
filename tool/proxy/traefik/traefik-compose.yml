@@ -1,4 +1,4 @@
-version: "3.4"
+version: "3.8"
 
 volumes:
   traefik-acme:
@@ -42,7 +42,7 @@ services:
       - "traefik.http.routers.traefik.rule=Host(`${DOMAIN?Traefik domain variable not set}`)"
       - "traefik.http.routers.traefik.middlewares=https-redirect"
       - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
-      - "traefik.http.middlewares.web-auth.basicauth.users=${USERNAME?username variable not set}:${PASSWORD?password variable not set}"
+      - "traefik.http.middlewares.web-auth.basicauth.users=${USERNAME?Username variable not set}:${HASHED_PASSWORD?hashed_password variable not set}"
       - "traefik.http.routers.traefik-secure.middlewares=web-auth"
       - "traefik.http.routers.traefik-secure.entrypoints=https"
       - "traefik.http.routers.traefik-secure.rule=Host(`${DOMAIN?Traefik domain variable not set}`)"
@@ -58,8 +58,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik-acme:/acme
-      - ./traefik:/traefik
+      - ./var/docker_volumes/traefik:/traefik
     networks:
-      # Use the public network created to be shared between Traefik and
-      # any other service that needs to be publicly available with HTTPS
+      # Use the public network created to be shared between Traefik and any other service that needs to be publicly available with HTTPS
       - web-net

@@ -18,7 +18,7 @@ func_create_certs() {
     openssl req -x509 -nodes -newkey \
     rsa:4096 -days 365 \
     -keyout $CERT_LOCATION/key.pem \
-    -subj "/C=IR/ST=Iran/L=Tehran/O=hacktor/OU=IT/CN=hacktor.co/emailAddress=topcodermc@gmail.com" \
+    -subj "/C=IR/ST=Iran/L=Tehran/O=hacktor/OU=IT/CN=hacktor.co/emailAddress=${EMAIL?Email variable not set}" \
     -out $CERT_LOCATION/cert.pem
 
     # cehck certificate
