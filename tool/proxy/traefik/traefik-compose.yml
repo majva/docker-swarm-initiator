@@ -33,7 +33,7 @@ services:
       - --providers.docker.exposedbydefault=false
       - --entrypoints.http.address=:80
       - --entrypoints.https.address=:443
-      - --entrypoints.http.address=:8080
+      - --entrypoints.http.address=:8081
       - --certificatesresolvers.mycert.acme.email=${EMAIL?email variable not set}
     labels:
       - "traefik.enable=true"
@@ -49,12 +49,11 @@ services:
       - "traefik.http.routers.traefik-secure.tls=true"
       - "traefik.http.routers.traefik-secure.tls.options=default"
       - "traefik.http.routers.traefik-secure.tls.certresolver=mycert"
-      - "traefik.http.services.traefik.loadbalancer.server.port=8081"
+      - "traefik.http.services.traefik.loadbalancer.server.port=8080"
     ports:
-      - 8080:8080
-      - 8083:8081
       - 8081:80
       - 8082:443
+      - 8083:8081
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
