@@ -1,9 +1,13 @@
 #!/bin/bash
 
-if [ "$EUID" -ne 0 ]
-  then echo "run this script on sudo permission"
-  exit
-fi
+func_check_permission() {
+    if [ "$EUID" -ne 0 ]
+        then echo "run this script on sudo permission"
+        exit
+    fi
+}
+
+func_check_permission
 
 echo "Please check that /etc/docker/daemon.json is empty or not"
 
