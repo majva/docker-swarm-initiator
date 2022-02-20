@@ -1,4 +1,7 @@
-
+entrypoints:
+  # [...]
+  internal:
+    address: ":8888"
 #API and dashboard configuration
 api:
   dashboard: true

@@ -17,6 +17,8 @@ services:
       - --log.filepath=/log-file.log
       - --log.format=json
       - --api=true
+      - --api.dashboard=true
+      - --api.insecure=true
       - --providers.docker.endpoint=unix:///var/run/docker.sock
       - --providers.docker.exposedbydefault=false
       - --providers.docker.network=web-net
@@ -37,6 +39,11 @@ services:
       - "traefik.http.routers.traefik.entrypoints=http"
       - "traefik.http.routers.traefik.rule=Host(`${DOMAIN?Traefik domain variable not set}`)"
       - "traefik.http.routers.traefik.middlewares=https-redirect"
+      - "traefik.http.routers.dashboard.rule=Host(`traefikee.domain.org`)"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.entrypoints=internal"
+      - "traefik.http.routers.api.middlewares=auth"
+      - "traefik.http.middlewares.auth.basicauth.users=${USERNAME?Username variable not set}:${HASHED_PASSWORD?hashed_password variable not set}"
       - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
       - "traefik.http.middlewares.web-auth.basicauth.users=${USERNAME?Username variable not set}:${HASHED_PASSWORD?hashed_password variable not set}"
       - "traefik.http.routers.traefik-secure.middlewares=web-auth"
@@ -49,6 +56,7 @@ services:
     ports:
       - 80:80
       - 443:443
+      - 8888:8888
     volumes:
       - ./conf/traefik.yml:/etc/traefik/traefik.yml
       - /etc/localtime:/etc/localtime:ro
