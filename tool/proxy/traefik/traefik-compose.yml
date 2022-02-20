@@ -11,7 +11,7 @@ networks:
 services:
   traefik:
     image: traefik:2.6.1
-    container_name: traefik
+    container_name: c_traefik
     command:
       - --log.level=INFO
       - --log.filepath=/log-file.log
@@ -34,7 +34,7 @@ services:
       - --entrypoints.https.address=:443
       - --entrypoints.http.address=:8080
       - --certificatesresolvers.mycert.acme.email=${EMAIL?email variable not set}
-   labels:
+    labels:
       - "traefik.enable=true"
       - "traefik.docker.network=web_net"
       - "traefik.http.routers.traefik.entrypoints=http"
@@ -60,4 +60,4 @@ services:
     networks:
       # Use the public network created to be shared between Traefik and
       # any other service that needs to be publicly available with HTTPS
-      - traefik-public
+      - web-net
