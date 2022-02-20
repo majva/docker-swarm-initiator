@@ -17,8 +17,6 @@ services:
       - --log.filepath=/log-file.log
       - --log.format=json
       - --api=true
-      - --api.insecure=true
-      - --api.dashboard=true
       - --providers.docker.endpoint=unix:///var/run/docker.sock
       - --providers.docker.exposedbydefault=false
       - --providers.docker.network=web-net
@@ -55,6 +53,7 @@ services:
       - 8082:443
       - 8083:8081
     volumes:
+      - ./conf/traefik.yml:/etc/traefik/traefik.yml
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik-acme:/acme

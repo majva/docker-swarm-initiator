@@ -1,6 +1,6 @@
 
 export EMAIL=topcodermc@gmail.com
-export DOMAIN=traefik.hacktor.local
+export DOMAIN=traefik.hacktor.com
 export USERNAME=admin
 export PASSWORD=password
 export HASHED_PASSWORD=$(openssl passwd -apr1 $PASSWORD)
