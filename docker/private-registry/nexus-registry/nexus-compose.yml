@@ -18,14 +18,14 @@ services:
       - traefik.docker.network=web-net
       - traefik.http.routers.nexus.entrypoints=http
       - traefik.http.routers.nexus.rule=Host(`${DOMAIN? Dmain variable not set}`)
-      - traefik.http.routers.nexus.middlewares=https-redirect
-      - traefik.http.routers.nexus-secure.entrypoints=https
-      - traefik.http.routers.nexus-secure.tls=true
-      - traefik.http.routers.nexus-secure.tls.options=default
-      - traefik.http.routers.nexus-secure.middlewares=security@file,hsts@file
-      - traefik.http.routers.nexus.service=nexus
-      - traefik.http.routers.nexus-secure.service=nexus
-      - traefik.http.routers.nexus-secure..tls.certresolver=mycert
+      # - traefik.http.routers.nexus.middlewares=https-redirect
+      - traefik.http.routers.nexus-secure.entrypoints=http
+      # - traefik.http.routers.nexus-secure.tls=true
+      # - traefik.http.routers.nexus-secure.tls.options=default
+      # - traefik.http.routers.nexus-secure.middlewares=security@file,hsts@file
+      # - traefik.http.routers.nexus.service=nexus
+      # - traefik.http.routers.nexus-secure.service=nexus
+      # - traefik.http.routers.nexus-secure.tls.certresolver=mycert
       - traefik.http.routers.nexus.loadbalancer.server.port=80
     restart: always
     networks: 
