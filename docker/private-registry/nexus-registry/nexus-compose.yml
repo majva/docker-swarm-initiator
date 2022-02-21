@@ -7,17 +7,18 @@ networks:
 services:
   nexus:
     image: sonatype/nexus3
-    # ports:
-    #   - "8082:8081"
-    #   - "5000:5000"
+    ports:
+      - "8082:8081"
+      - "5000:5000"
     volumes:
       - "/var/docker_volumes/nexus:/nexus-data"
     container_name: c_nexus
     labels:
       - traefik.enable=true
       - traefik.docker.network=web-net
-      # - traefik.http.routers.nexus.entrypoints=http
+      - traefik.http.routers.nexus.entrypoints=http
       - traefik.http.routers.nexus.rule=Host(`${DOMAIN? Dmain variable not set}`)
+      - traefik.port=80
       # - traefik.http.routers.nexus.middlewares=https-redirect
       # - traefik.http.routers.nexus-secure.entrypoints=http
       # - traefik.http.routers.nexus-secure.tls=true
@@ -26,7 +27,7 @@ services:
       # - traefik.http.routers.nexus.service=nexus
       # - traefik.http.routers.nexus-secure.service=nexus
       # - traefik.http.routers.nexus-secure.tls.certresolver=mycert
-      - traefik.http.routers.nexus.loadbalancer.server.port=8081
+      # - traefik.http.routers.nexus.loadbalancer.server.port=8081
     restart: always
     networks: 
       - web-net
