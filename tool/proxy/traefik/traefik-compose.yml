@@ -10,6 +10,7 @@ networks:
 
 services:
   traefik:
+    restart: always
     image: traefik:2.6.1
     container_name: c_traefik
     command:
