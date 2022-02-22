@@ -1,10 +1,6 @@
+export DOMAIN=git.hacktor.com
+export DB_USER=gitlab
+export DB_PASSWORD=ASDkndsv12@12eidn
+export DB_NAME=gitlabhq_production
 
-export NODE_ID=$(docker info -f '{{.Swarm.NodeID}}')
-export GITLAB_HOST=git.hacktor.local
-export REGISTRY_HOST=registry.hacktor.local
-export GITLAB_EMAIL=git@hacktor.local
-export GITLAB_EMAIL_REPLY_TO=git@hacktor.local
-export GITLAB_INCOMING_EMAIL_ADDRESS=git@hacktor.local
-export GITLAB_ROOT_PASSWORD=password
-export GITLAB_ROOT_EMAIL=admin@hacktor.local
-export DOCKER_REGISTRY_HOST=registry.hacktor.com:5000
+# export NODE_ID=$(docker info -f '{{.Swarm.NodeID}}')

@@ -1,29 +1,43 @@
 version: '3.8'
 
+volumes:
+  redis-data:
+  postgresql-data:
+  gitlab-data:
+
+networks:
+  gitlab-net:
+    external: true
+    name: gitlab
+
 services:
   redis:
     restart: always
     image: redis
     command:
-    - --loglevel warning
+      - --loglevel warning
     volumes:
-    - redis-data:/var/lib/redis:Z
+      - redis-data:/var/lib/redis:Z
+    networks:
+      - gitlab-net
 
   postgresql:
     restart: always
     image: sameersbn/postgresql
     volumes:
-    - postgresql-data:/var/lib/postgresql:Z
+      - postgresql-data:/var/lib/postgresql:Z
     environment:
-    - DB_USER=gitlab
-    - DB_PASS=ASDkndsv12@12eidn
-    - DB_NAME=gitlabhq_production
-    - DB_EXTENSION=pg_trgm,btree_gist
+      - DB_USER=${DB_USER?database user not set}
+      - DB_PASS=${DB_PASSWORD?database password not set}
+      - DB_NAME=${DB_NAME?database name not set}
+      - DB_EXTENSION=pg_trgm,btree_gist
+    networks:
+      - gitlab-net
 
   gitlab:
     restart: always
     image: sameersbn/gitlab
-    hostname: 'gitlab.hacktor-infra.co'
+    hostname: '${DOMAIN? domain variable not set}'
     depends_on:
     - redis
     - postgresql
@@ -39,14 +53,16 @@ services:
       timeout: 10s
       retries: 3
       start_period: 5m
+    networks:
+      - gitlab-net
     environment:
     - DEBUG=false 
     - DB_ADAPTER=postgresql
     - DB_HOST=postgresql
     - DB_PORT=5432
-    - DB_USER=gitlab
-    - DB_PASS=ASDkndsv12@12eidn
-    - DB_NAME=gitlabhq_production
+    - DB_USER=${DB_USER?database user not set}
+    - DB_PASS=${DB_PASSWORD?database password not set}
+    - DB_NAME=${DB_NAME?database name not set}
 
     - REDIS_HOST=redis
     - REDIS_PORT=6379
@@ -57,7 +73,7 @@ services:
     - GITLAB_HTTPS=false
     - SSL_SELF_SIGNED=false
 
-    - GITLAB_HOST=gitlab.hacktor-infra.co
+    - GITLAB_HOST=${DOMAIN? domain not set}
     - GITLAB_PORT=80
     - GITLAB_SSH_PORT=10022
     - GITLAB_RELATIVE_URL_ROOT=/
@@ -71,17 +87,9 @@ services:
     - GITLAB_BACKUP_SCHEDULE=daily
     - GITLAB_BACKUP_TIME=01:00
 
-
     - OAUTH_CAS3_LABEL=cas3
     - OAUTH_CAS3_SERVER=
     - OAUTH_CAS3_DISABLE_SSL_VERIFICATION=false
     - OAUTH_CAS3_LOGIN_URL=/cas/login
     - OAUTH_CAS3_VALIDATE_URL=/cas/p3/serviceValidate
     - OAUTH_CAS3_LOGOUT_URL=/cas/logout
-
-
-
-volumes:
-  redis-data:
-  postgresql-data:
-  gitlab-data:
