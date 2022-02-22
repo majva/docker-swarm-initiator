@@ -9,6 +9,7 @@ networks:
   gitlab-net:
     external: true
     name: gitlab
+  gitlab:
 
 services:
   redis:
@@ -56,40 +57,40 @@ services:
     networks:
       - gitlab-net
     environment:
-    - DEBUG=false 
-    - DB_ADAPTER=postgresql
-    - DB_HOST=postgresql
-    - DB_PORT=5432
-    - DB_USER=${DB_USER?database user not set}
-    - DB_PASS=${DB_PASSWORD?database password not set}
-    - DB_NAME=${DB_NAME?database name not set}
+      - DEBUG=false 
+      - DB_ADAPTER=postgresql
+      - DB_HOST=postgresql
+      - DB_PORT=5432
+      - DB_USER=${DB_USER?database user not set}
+      - DB_PASS=${DB_PASSWORD?database password not set}
+      - DB_NAME=${DB_NAME?database name not set}
 
-    - REDIS_HOST=redis
-    - REDIS_PORT=6379
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
 
-    - TZ=Asia/Tehran
-    - GITLAB_TIMEZONE=Tehran
+      - TZ=Asia/Tehran
+      - GITLAB_TIMEZONE=Tehran
 
-    - GITLAB_HTTPS=false
-    - SSL_SELF_SIGNED=false
+      - GITLAB_HTTPS=false
+      - SSL_SELF_SIGNED=false
 
-    - GITLAB_HOST=${DOMAIN? domain not set}
-    - GITLAB_PORT=80
-    - GITLAB_SSH_PORT=10022
-    - GITLAB_RELATIVE_URL_ROOT=/
-    - GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alphanumeric-string
-    - GITLAB_SECRETS_SECRET_KEY_BASE=long-and-random-alphanumeric-string
-    - GITLAB_SECRETS_OTP_KEY_BASE=long-and-random-alphanumeric-string
+      - GITLAB_HOST=${DOMAIN? domain not set}
+      - GITLAB_PORT=80
+      - GITLAB_SSH_PORT=10022
+      - GITLAB_RELATIVE_URL_ROOT=/
+      - GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alphanumeric-string
+      - GITLAB_SECRETS_SECRET_KEY_BASE=long-and-random-alphanumeric-string
+      - GITLAB_SECRETS_OTP_KEY_BASE=long-and-random-alphanumeric-string
 
-    - GITLAB_NOTIFY_ON_BROKEN_BUILDS=true
-    - GITLAB_NOTIFY_PUSHER=false
+      - GITLAB_NOTIFY_ON_BROKEN_BUILDS=true
+      - GITLAB_NOTIFY_PUSHER=false
 
-    - GITLAB_BACKUP_SCHEDULE=daily
-    - GITLAB_BACKUP_TIME=01:00
+      - GITLAB_BACKUP_SCHEDULE=daily
+      - GITLAB_BACKUP_TIME=01:00
 
-    - OAUTH_CAS3_LABEL=cas3
-    - OAUTH_CAS3_SERVER=
-    - OAUTH_CAS3_DISABLE_SSL_VERIFICATION=false
-    - OAUTH_CAS3_LOGIN_URL=/cas/login
-    - OAUTH_CAS3_VALIDATE_URL=/cas/p3/serviceValidate
-    - OAUTH_CAS3_LOGOUT_URL=/cas/logout
+      - OAUTH_CAS3_LABEL=cas3
+      - OAUTH_CAS3_SERVER=
+      - OAUTH_CAS3_DISABLE_SSL_VERIFICATION=false
+      - OAUTH_CAS3_LOGIN_URL=/cas/login
+      - OAUTH_CAS3_VALIDATE_URL=/cas/p3/serviceValidate
+      - OAUTH_CAS3_LOGOUT_URL=/cas/logout
