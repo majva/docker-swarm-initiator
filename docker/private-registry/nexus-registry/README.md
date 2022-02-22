@@ -16,3 +16,7 @@ then put this lines to it as json of root of element.
     ```
         "insecure-registries" : [ "http://domain:port" ]
     ```
+then restart docker service with this command
+    ```
+        service docker restart
+    ```
