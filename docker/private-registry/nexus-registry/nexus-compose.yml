@@ -19,11 +19,11 @@ services:
       
       - traefik.http.routers.nexus.entrypoints=http
       - traefik.http.routers.nexus.rule=Host(`${DOMAIN? Dmain variable not set}`)
-      - traefik.http.services.nexus.loadbalancer.server.port=8081
+      - traefik.nexus.port=8081
 
-      - traefik.http.routers.nexus-docker.rule=Host(`${DOMAIN? Dmain variable not set}`)
-      - traefik.http.routers.nexus-docker.entrypoints=web
-      - traefik.http.services.nexus-docker.loadbalancer.server.port=9001
+      - traefik.web.routers.nexus-docker.rule=Host(`${DOMAIN? Dmain variable not set}`)
+      - traefik.web.routers.nexus-docker.entrypoints=web
+      - traefik.web.services.nexus-docker.loadbalancer.server.port=9001
      
       # - traefik.http.routers.nexus.middlewares=https-redirect
       # - traefik.http.routers.nexus-secure.entrypoints=http
