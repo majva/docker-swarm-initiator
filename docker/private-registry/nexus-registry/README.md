@@ -2,7 +2,7 @@
 
 - run this command on your node
     ```
-        $ bash install.sh
+        bash install.sh
     ```
 
 # Note
