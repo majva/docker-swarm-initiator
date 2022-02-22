@@ -22,7 +22,7 @@ services:
 
       - traefik.http.routers.nexus-docker.rule=Host(`${DOMAIN? Dmain variable not set}`)
       - traefik.http.routers.nexus-docker.entrypoints=http
-      - traefik.http.routers.nexus-docker.service=whoami-https-service
+      - traefik.http.routers.nexus-docker.service=nexus-docker
       - traefik.nexus-docker.port=9001
      
       # - traefik.http.routers.nexus.middlewares=https-redirect
