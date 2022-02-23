@@ -1,8 +1,8 @@
 #!/bin/bash
 
-docker volume create gitlab-runner-data
+# docker volume create gitlab-runner-data
 
-docker-compose -f gitlab-runner-compose.yml up -d --scale gitlab-runners=4
+# docker-compose -f gitlab-runner-compose.yml up -d --scale gitlab-runners=4
 
 #docker node update --label-add gitlab-runner.config=true $NODE_ID
 #docker stack deploy -c gitlab-runners.docker-compose.swarm.yml gitlab-runners
@@ -10,7 +10,7 @@ docker-compose -f gitlab-runner-compose.yml up -d --scale gitlab-runners=4
 RUNNER_CONFIG_TEMPLATE=/tmp/runner-config.template.toml
 
 # go to admin pannel then go to runner, now put token below 
-GITLAB_SHARED_REGISTRAION_TOKEN=-VSxCGvxnBb2NNQYDsEV
+GITLAB_SHARED_REGISTRAION_TOKEN=${GITLAB_TOKEN?Variable is not set}
 
 cat > $RUNNER_CONFIG_TEMPLATE << EOF
 [[runners]]
@@ -18,14 +18,13 @@ cat > $RUNNER_CONFIG_TEMPLATE << EOF
   [runners.docker]
     tls_verify = false
     privileged = true
-    extra_hosts = ["gitlab.hacktor.com:192.168.14.140"]
     volumes = ["/certs/client", "/cache"]
     [[runners.docker.services]]
       name = "docker:dind"
 EOF
 
 # put your gitlab domain below 
-GITLAB_INSTANCE_URL=http://192.168.14.140/
+GITLAB_INSTANCE_URL=${DOMAIN?Variable is not set}
 
 docker run --rm -it \
     -v gitlab-runner-data:/etc/gitlab-runner \

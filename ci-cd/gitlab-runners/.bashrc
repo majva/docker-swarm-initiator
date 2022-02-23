@@ -1,1 +1,2 @@
-export DOCKER_REGISTRY_HOST=registry.hacktor.com:5000
+export DOMAIN=git.hacktor.com
+export GITLAB_SHARED_REGISTRAION_TOKEN=
