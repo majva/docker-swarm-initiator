@@ -18,3 +18,5 @@ services:
       - RUNNER_EXECUTOR=shell
       - PRIVILEGED=true
     restart: always
+    networks:
+      - web-net
