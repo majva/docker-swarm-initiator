@@ -7,13 +7,14 @@ networks:
     name: 'web-net'
 
 services:
-  image: sameersbn/gitlab-ci-multi-runner
-  volumes:
-    - /var/docker_volumes/gitlab-runner:/home/gitlab_ci_multi_runner/data
-  environment:
-    - CI_SERVER_URL=
-    - RUNNER_TOKEN=
-    - RUNNER_DESCRIPTION=
-    - RUNNER_EXECUTOR=shell
-    - PRIVILEGED=true
-  restart: always
+  gitlab-runner:
+    image: sameersbn/gitlab-ci-multi-runner
+    volumes:
+      - /var/docker_volumes/gitlab-runner:/home/gitlab_ci_multi_runner/data
+    environment:
+      - CI_SERVER_URL=${DOMAIN?Variable is not set}
+      - RUNNER_TOKEN=${GITLAB_TOKEN?Variable is not set}
+      - RUNNER_DESCRIPTION=hacktor,docker,gitlab,runner
+      - RUNNER_EXECUTOR=shell
+      - PRIVILEGED=true
+    restart: always
