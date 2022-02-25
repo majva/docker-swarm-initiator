@@ -1,2 +1,2 @@
-export DOMAIN=git.hacktor.com
+export DOMAIN=
 export GITLAB_TOKEN=

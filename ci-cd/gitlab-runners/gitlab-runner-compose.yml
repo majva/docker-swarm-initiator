@@ -11,6 +11,7 @@ services:
     image: sameersbn/gitlab-ci-multi-runner
     volumes:
       - /var/docker_volumes/gitlab-runner:/home/gitlab_ci_multi_runner/data
+      - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - CI_SERVER_URL=${DOMAIN?Variable is not set}
       - RUNNER_TOKEN=${GITLAB_TOKEN?Variable is not set}
