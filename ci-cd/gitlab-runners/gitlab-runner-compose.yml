@@ -12,14 +12,14 @@ services:
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./gitlab-runner/config:/etc/gitlab-runner
+      - /var/docker_volumes/gitlab-runner/config:/etc/gitlab-runner
     networks:
       - web-net
 
   register-gitlab-runner:
     image: gitlab/gitlab-runner:alpine
     volumes:
-      - ./gitlab-runner/config:/etc/gitlab-runner
+      - /var/docker_volumes/gitlab-runner/config:/etc/gitlab-runner
     command:
       - register
       - --non-interactive
