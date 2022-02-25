@@ -28,6 +28,7 @@ services:
       - --name=GitLab Runner
       - --tag-list=docker,dind
       - --executor=docker
+      - --privileged=true
       - --docker-image=docker:stable
       - --docker-volumes=/var/run/docker.sock:/var/run/docker.sock
       - --docker-network-mode=gitlab-default
