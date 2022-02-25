@@ -5,4 +5,4 @@
 ![Contributions welcome](https://img.shields.io/badge/contributions-welcome-cyan.svg)
 
 # ABOUT.
-Easy DevOps and Orchestration guild lines and documents to setup your own services.
+Easy DevOps and Orchestration guide lines and documents to setup your own services.
