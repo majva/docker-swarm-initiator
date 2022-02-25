@@ -1,0 +1,23 @@
+
+version: '3.8'
+
+networks:
+  web-net:
+    external: true
+    name: 'web-net'
+
+services:
+  gitlab-runner:
+    image: sameersbn/gitlab-ci-multi-runner
+    volumes:
+      - /var/docker_volumes/gitlab-runner:/home/gitlab_ci_multi_runner/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - CI_SERVER_URL=${DOMAIN?Variable is not set}
+      - RUNNER_TOKEN=${GITLAB_TOKEN?Variable is not set}
+      - RUNNER_DESCRIPTION=hacktor,docker,gitlab,runner
+      - RUNNER_EXECUTOR=shell
+      - PRIVILEGED=true
+    restart: always
+    networks:
+      - web-net

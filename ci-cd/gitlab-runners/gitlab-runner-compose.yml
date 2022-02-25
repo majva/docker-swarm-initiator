@@ -1,23 +1,38 @@
-
 version: '3.8'
 
 networks:
   web-net:
     external: true
-    name: 'web-net'
 
 services:
+
   gitlab-runner:
-    image: sameersbn/gitlab-ci-multi-runner
-    volumes:
-      - /var/docker_volumes/gitlab-runner:/home/gitlab_ci_multi_runner/data
-      - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      - CI_SERVER_URL=${DOMAIN?Variable is not set}
-      - RUNNER_TOKEN=${GITLAB_TOKEN?Variable is not set}
-      - RUNNER_DESCRIPTION=hacktor,docker,gitlab,runner
-      - RUNNER_EXECUTOR=shell
-      - PRIVILEGED=true
+    image: gitlab/gitlab-runner:alpine
+    container_name: gitlab-runner
     restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./gitlab-runner/config:/etc/gitlab-runner
+    networks:
+      - web-net
+
+  register-gitlab-runner:
+    image: gitlab/gitlab-runner:alpine
+    volumes:
+      - ./gitlab-runner/config:/etc/gitlab-runner
+    command:
+      - register
+      - --non-interactive
+      - --locked=false
+      - --run-untagged
+      - --name=GitLab Runner
+      - --tag-list=docker,dind
+      - --executor=docker
+      - --docker-image=docker:stable
+      - --docker-volumes=/var/run/docker.sock:/var/run/docker.sock
+      - --docker-network-mode=gitlab-default
+    environment:
+      - "CI_SERVER_URL=http://${DOMAIN?domain variable is not set}"
+      - "REGISTRATION_TOKEN=${GITLAB_TOKEN?token variable is not set}"
     networks:
       - web-net
