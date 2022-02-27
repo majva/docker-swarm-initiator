@@ -28,12 +28,11 @@ services:
       - --name=GitLab Runner
       - --tag-list=dev
       - --executor=docker
-      - --privileged=true
       - --docker-image=docker:stable
       - --docker-volumes=/var/run/docker.sock:/var/run/docker.sock
       - --docker-network-mode=web-net
     environment:
-      - "CI_SERVER_URL=${DOMAIN?domain variable is not set}"
-      - "REGISTRATION_TOKEN=${GITLAB_TOKEN?token variable is not set}"
+      - "CI_SERVER_URL=<your domain>"
+      - "REGISTRATION_TOKEN=<your registeration token>"
     networks:
       - web-net
