@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# source .bashrc
+source .bashrc
 
 func_check_permission() {
   if [ "$EUID" -ne 0 ]
@@ -11,7 +11,4 @@ func_check_permission() {
 
 func_check_permission
 
-docker-compose -f gitlab-runner-compose.yml up -d 
-#--scale gitlab-runners=4
-
-#docker stack deploy -c gitlab-runners.docker-compose.swarm.yml gitlab-runners
+docker-compose -f gitlab-runner-compose.yml up -d
