@@ -56,7 +56,7 @@ services:
     image: postgres
     environment:
       POSTGRES_USER: sentry
-      POSTGRES_PASSWORD: secret
+      POSTGRES_PASSWORD: secret_password_formeandyou
     volumes:
       - pg-data:/var/lib/postgresql/data
     ports:
