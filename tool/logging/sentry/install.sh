@@ -13,4 +13,4 @@ source .bashrc
 
 docker network create sentry
 
-docker-compose -f portainer.yml up -d
+docker-compose -f sentry-compose.yml up -d
