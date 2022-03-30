@@ -9,7 +9,7 @@ check_root_access() {
 
 check_root_access
 
-source .bashrc
+source .env
 
 docker network create sentry
 
