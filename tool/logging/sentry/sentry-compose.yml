@@ -1,79 +1,79 @@
-version: '3.4'
+version: '3.7'
 
 services:
-
-  sentry:
-    container_name: sentry
-    image: sentry
-    env_file:
-      - .env
-    ports:
-      - '9000:9000'
-    restart: always
-    depends_on:
-      - db
-      - redis
-    tty: true
-    networks:
-      - sentry
-    stdin_open: true
-
-  cron:
-    container_name: sentry-cron
-    image: sentry
-    command: run cron
-    restart: always
-    env_file:
-      - .env
-    networks:
-      - sentry
-    depends_on:
-      - db
-      - redis
-
-  worker:
-    container_name: sentry-worker
-    image: sentry
-    command: run worker
-    env_file:
-      - .env
-    depends_on:
-      - db
-      - redis
-    restart: always
-    networks:
-      - sentry
-
-  redis:
+  sentry-redis:
+    image: redis:latest
     container_name: sentry-redis
+    hostname: sentry-redis
     restart: always
-    image: redis
-    volumes:
-      - redis-data:/data
-    ports:
-      - '6379:6379'
     networks:
       - sentry
-
-  db:
+    volumes:
+      - './data/sentry/redis/data:/data'
+  
+  sentry-postgres:
+    image: postgres:latest
     container_name: sentry-postgres
-    image: postgres
+    hostname: sentry-postgres
+    restart: always
     environment:
       POSTGRES_USER: sentry
-      POSTGRES_PASSWORD: secret_password_formeandyou
+      POSTGRES_PASSWORD: 89PsZXyRStOT2
       POSTGRES_DB: sentry
-    volumes:
-      - pg-data:/var/lib/postgresql/data
-    # ports:
-      # - '5433:5432'
     networks:
       - sentry
-    restart: always
+    volumes:
+      - './data/sentry/postgres:/var/lib/postgresql/data'
 
-volumes:
-  redis-data:
-  pg-data:
+  sentry-base:
+    image: sentry:latest
+    container_name: sentry-base
+    hostname: sentry-base
+    restart: always
+    ports:
+      - '9000:9000'
+    env_file:
+      - .env
+    depends_on:
+      - sentry-redis
+      - sentry-postgres
+    networks:
+      - sentry
+    volumes:
+      - './data/sentry/sentry:/var/lib/sentry/files'
+
+  sentry-cron:
+    image: sentry:latest
+    container_name: sentry-cron
+    hostname: sentry-cron
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - sentry-redis
+      - sentry-postgres
+    command: "sentry run cron"
+    networks:
+      - sentry
+    volumes:
+      - './data/sentry/sentry:/var/lib/sentry/files'
+
+  sentry-worker:
+    image: sentry:latest
+    container_name: sentry-worker
+    hostname: sentry-worker
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - sentry-redis
+      - sentry-postgres
+    command: "sentry run worker"
+    networks:
+      - sentry
+    volumes:
+      - './data/sentry/sentry:/var/lib/sentry/files'
 
 networks:
-  sentry: 
-    external: true
+  sentry:
+    driver: bridge
