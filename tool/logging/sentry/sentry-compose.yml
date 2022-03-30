@@ -9,6 +9,7 @@ services:
       - .env
     ports:
       - '9000:9000'
+    restart: always
     depends_on:
       - db
       - redis
@@ -21,6 +22,7 @@ services:
     container_name: sentry-cron
     image: sentry
     command: run cron
+    restart: always
     env_file:
       - .env
     networks:
@@ -38,11 +40,13 @@ services:
     depends_on:
       - db
       - redis
+    restart: always
     networks:
       - sentry
 
   redis:
     container_name: sentry-redis
+    restart: always
     image: redis
     volumes:
       - redis-data:/data
@@ -57,12 +61,14 @@ services:
     environment:
       POSTGRES_USER: sentry
       POSTGRES_PASSWORD: secret_password_formeandyou
+      POSTGRES_DB: sentry
     volumes:
       - pg-data:/var/lib/postgresql/data
-    ports:
-      - '5432:5432'
+    # ports:
+      # - '5433:5432'
     networks:
       - sentry
+    restart: always
 
 volumes:
   redis-data:
