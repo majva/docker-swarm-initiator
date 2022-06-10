@@ -32,10 +32,6 @@ services:
     volumes:
       - /var/docker_volumes/gitlab-runner/config:/etc/gitlab-runner
     deploy:
-      mode: replicated
-      replicas: 4
-      restart_policy:
-        condition: on-failure
       placement:
         constraints:
           - node.labels.name == ci-runner
