@@ -1,0 +1,36 @@
+version: "3.8"
+
+networks:
+  app-net:
+    driver: overlay
+
+volumes:
+  postgres:
+
+services:
+  postgres:
+    image: postgres
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.name == {name}
+      update_config:
+        parallelism: 1
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: {password}
+      PGDATA: /data/postgres
+    volumes:
+       - /var/docker_volumes/postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - app-net
+    restart: always
