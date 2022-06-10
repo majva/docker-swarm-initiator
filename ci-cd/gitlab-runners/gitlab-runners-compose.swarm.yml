@@ -31,15 +31,10 @@ services:
     image: gitlab/gitlab-runner:alpine
     volumes:
       - /var/docker_volumes/gitlab-runner/config:/etc/gitlab-runner
-    # deploy:
-    #   placement:
-    #     constraints:
-    #       - node.labels.name == ci-runner
-    #   update_config:
-    #     parallelism: 1
-    #     order: start-first
-    #     failure_action: rollback
-    #     delay: 10s
+    deploy:
+      placement:
+        constraints:
+          - node.labels.name == ci-runner
     command:
       - register
       - --non-interactive
