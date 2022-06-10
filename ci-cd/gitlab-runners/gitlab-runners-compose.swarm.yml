@@ -26,6 +26,20 @@ services:
       - /var/docker_volumes/gitlab-runner/config:/etc/gitlab-runner
     networks:
       - web-net
+
+  register-gitlab-runner:
+    image: gitlab/gitlab-runner:alpine
+    volumes:
+      - /var/docker_volumes/gitlab-runner/config:/etc/gitlab-runner
+    # deploy:
+    #   placement:
+    #     constraints:
+    #       - node.labels.name == ci-runner
+    #   update_config:
+    #     parallelism: 1
+    #     order: start-first
+    #     failure_action: rollback
+    #     delay: 10s
     command:
       - register
       - --non-interactive
@@ -41,20 +55,5 @@ services:
       # - "CONCURRENT=8"
       - "CI_SERVER_URL="
       - "REGISTRATION_TOKEN="
-
-  # register-gitlab-runner:
-  #   image: gitlab/gitlab-runner:alpine
-  #   volumes:
-  #     - /var/docker_volumes/gitlab-runner/config:/etc/gitlab-runner
-  #   deploy:
-  #     placement:
-  #       constraints:
-  #         - node.labels.name == ci-runner
-  #     update_config:
-  #       parallelism: 1
-  #       order: start-first
-  #       failure_action: rollback
-  #       delay: 10s
-
-  #   networks:
-  #     - web-net
+    networks:
+      - web-net
