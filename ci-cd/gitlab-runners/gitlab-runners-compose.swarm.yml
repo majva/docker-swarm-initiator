@@ -2,17 +2,25 @@ version: '3.8'
 
 networks:
   web-net:
-    external: true
+    driver: overlay
 
 services:
 
   gitlab-runner:
     image: gitlab/gitlab-runner:alpine
-    container_name: gitlab-runner
-    restart: always
     deploy:
+      restart_policy:
+        condition: on-failure
       mode: replicated
       replicas: 4
+      placement:
+        constraints:
+          - node.labels.name == ci-runner
+      update_config:
+        parallelism: 1
+        order: start-first
+        failure_action: rollback
+        delay: 10s
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/docker_volumes/gitlab-runner/config:/etc/gitlab-runner
@@ -26,19 +34,30 @@ services:
     deploy:
       mode: replicated
       replicas: 4
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.name == ci-runner
+      update_config:
+        parallelism: 1
+        order: start-first
+        failure_action: rollback
+        delay: 10s
     command:
       - register
       - --non-interactive
       - --locked=false
       - --run-untagged
       - --name=GitLab Runner
-      - --tag-list=dev
+      - --tag-list=publish
       - --executor=docker
       - --docker-image=docker:stable
       - --docker-volumes=/var/run/docker.sock:/var/run/docker.sock
       - --docker-network-mode=web-net
     environment:
-      - "CI_SERVER_URL=<your domain>"
-      - "REGISTRATION_TOKEN=<your registeration token>"
+      - "CONCURRENT=8"
+      - "CI_SERVER_URL="
+      - "REGISTRATION_TOKEN="
     networks:
       - web-net
