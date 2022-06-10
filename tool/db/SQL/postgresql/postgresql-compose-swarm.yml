@@ -24,13 +24,12 @@ services:
         failure_action: rollback
         delay: 10s
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: {password}
-      PGDATA: /data/postgres
+      - "POSTGRES_USER: postgres"
+      - "POSTGRES_PASSWORD: {password}"
+      - "PGDATA: /data/postgres"
     volumes:
        - /var/docker_volumes/postgres:/data/postgres
     ports:
       - "5432:5432"
     networks:
       - app-net
-    restart: always
