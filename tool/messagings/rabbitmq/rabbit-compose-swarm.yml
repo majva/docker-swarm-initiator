@@ -1,5 +1,9 @@
 version: '3.8'
 
+networks:
+  app-net:
+    driver: overlay
+
 services:
   rabbitmq:
     image: "rabbitmq:3-management-alpine"
@@ -30,9 +34,4 @@ services:
         - /var/docker_volumes/rabbitmq/data/:/var/lib/rabbitmq/
         - /var/docker_volumes/rabbitmq/log/:/var/log/rabbitmq
     networks:
-      - my-network
-    restart: always
-
-networks:
-  my-network: 
-    external: true
+      - app-net
