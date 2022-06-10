@@ -1,18 +1,44 @@
-version: '3.4'
-services:
-  gitlab-runners:
-    image: ${DOCKER_REGISTRY_HOST?Variable not set}/gitlab-runner
-    volumes:
-    - gitlab-runner-data:/etc/gitlab-runner
-    - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - default
-    deploy:
-      placement:
-        constraints:
-          - node.labels.gitlab-runner.config == true
-      replicas: 4
+version: '3.8'
 
-volumes:
-  gitlab-runner-data:
+networks:
+  web-net:
     external: true
+
+services:
+
+  gitlab-runner:
+    image: gitlab/gitlab-runner:alpine
+    container_name: gitlab-runner
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 4
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/docker_volumes/gitlab-runner/config:/etc/gitlab-runner
+    networks:
+      - web-net
+
+  register-gitlab-runner:
+    image: gitlab/gitlab-runner:alpine
+    volumes:
+      - /var/docker_volumes/gitlab-runner/config:/etc/gitlab-runner
+    deploy:
+      mode: replicated
+      replicas: 4
+    command:
+      - register
+      - --non-interactive
+      - --locked=false
+      - --run-untagged
+      - --name=GitLab Runner
+      - --tag-list=dev
+      - --executor=docker
+      - --docker-image=docker:stable
+      - --docker-volumes=/var/run/docker.sock:/var/run/docker.sock
+      - --docker-network-mode=web-net
+    environment:
+      - "CI_SERVER_URL=<your domain>"
+      - "REGISTRATION_TOKEN=<your registeration token>"
+    networks:
+      - web-net
