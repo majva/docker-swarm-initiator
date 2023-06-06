@@ -1,19 +1,27 @@
 version: '3.4'
 
-networks:
-  monitor-net:
-    driver: bridge
-
 volumes:
-    prometheus_data:
-    grafana_data:
+  prometheus_data:
+  grafana_data:
 
 services:
   prometheus:
     image: prom/prometheus:latest
-    container_name: prometheus
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.labels.aka == Logging]
+      labels:
+        - org.label-schema.group=monitoring
+        - traefik.enable=true
+        - traefik.docker.network=traefik_network
+        - traefik.http.routers.statics.entrypoints=websecure
+        - traefik.http.routers.statics.tls=true
+        - traefik.http.routers.statics.rule=Host(`prometheus.example.io`)
+        - traefik.http.services.statics.loadbalancer.server.port=9090
     volumes:
-      - ./prometheus:/etc/prometheus
+      - /var/docker_volumes/prometheus:/etc/prometheus
       - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -22,33 +30,49 @@ services:
       - '--web.console.templates=/etc/prometheus/consoles'
       - '--storage.tsdb.retention.time=200h'
       - '--web.enable-lifecycle'
-    restart: unless-stopped
-    ports:
-      - 9090:9090
     networks:
       - monitor-net
-    labels:
-      org.label-schema.group: "monitoring"
+      - traefik_network
 
   alertmanager:
     image: prom/alertmanager:latest
-    container_name: alertmanager
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.labels.aka == Logging]
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik_network
+        - traefik.http.routers.statics.entrypoints=websecure
+        - traefik.http.routers.statics.tls=true
+        - traefik.http.routers.statics.rule=Host(`alertmanager.example.io`)
+        - traefik.http.services.statics.loadbalancer.server.port=9093
+        - org.label-schema.group=monitoring
     volumes:
-      - ./alertmanager:/etc/alertmanager
+      - /var/docker_volumes/alertmanager:/etc/alertmanager
     command:
       - '--config.file=/etc/alertmanager/config.yml'
       - '--storage.path=/alertmanager'
-    restart: unless-stopped
-    ports:
-      - 9093:9093
     networks:
       - monitor-net
-    labels:
-      org.label-schema.group: "monitoring"
+      - traefik_network
 
   nodeexporter:
     image: prom/node-exporter:latest
-    container_name: nodeexporter
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.labels.aka == Logging]
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik_network
+        - traefik.http.routers.statics.entrypoints=websecure
+        - traefik.http.routers.statics.tls=true
+        - traefik.http.routers.statics.rule=Host(`nodeexporter.example.io`)
+        - traefik.http.services.statics.loadbalancer.server.port=9100
+        - org.label-schema.group=monitoring
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
@@ -58,39 +82,59 @@ services:
       - '--path.rootfs=/rootfs'
       - '--path.sysfs=/host/sys'
       - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
-    restart: unless-stopped
-    ports:
-      - 9100:9100
     networks:
+      - traefik_network
       - monitor-net
-    labels:
-      org.label-schema.group: "monitoring"
 
   grafana:
     image: grafana/grafana:latest
-    container_name: grafana
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.labels.aka == Logging]
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik_network
+        - traefik.http.routers.statics.entrypoints=websecure
+        - traefik.http.routers.statics.tls=true
+        - traefik.http.routers.statics.rule=Host(`grafana.example.io`)
+        - traefik.http.services.statics.loadbalancer.server.port=3000
+        - org.label-schema.group=monitoring
     volumes:
       - grafana_data:/var/lib/grafana
-      - ./grafana/provisioning:/etc/grafana/provisioning
+      - /var/docker_volumes/grafana/provisioning:/etc/grafana/provisioning
     environment:
       - GF_SECURITY_ADMIN_USER=${ADMIN_USER}
       - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD}
       - GF_USERS_ALLOW_SIGN_UP=false
-    restart: unless-stopped
-    ports:
-      - 3000:3000
     networks:
       - monitor-net
-    labels:
-      org.label-schema.group: "monitoring"
+      - traefik_network
 
   pushgateway:
     image: prom/pushgateway:latest
-    container_name: pushgateway
-    restart: unless-stopped
-    ports:
-      - 9091:9091
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.labels.aka == Logging]
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik_network
+        - traefik.http.routers.statics.entrypoints=websecure
+        - traefik.http.routers.statics.tls=true
+        - traefik.http.routers.statics.rule=Host(`pushgateway.example.io`)
+        - traefik.http.services.statics.loadbalancer.server.port=9091
+        - org.label-schema.group=monitoring
     networks:
       - monitor-net
-    labels:
-      org.label-schema.group: "monitoring"
+      - traefik_network
+
+networks:
+  monitor-net:
+    external: true
+    name: "monitor-net"
+  traefik_network:
+    external: true
+    name: "traefik_network"

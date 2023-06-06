@@ -1,0 +1,38 @@
+global:
+  checkNewVersion: true
+
+log:
+  level: WARN
+
+api:
+  insecure: true
+  dashboard: true
+
+ping: {}
+
+providers:
+  docker:
+    exposedByDefault: false
+    watch: true
+    endpoint: "unix:///var/run/docker.sock"
+    swarmMode: true
+  file:
+    fileName: /etc/traefik/traefik.yaml
+    watch: true
+
+entryPoints:
+  web:
+    address: :80
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+          permanent: true
+  websecure:
+    address: :443
+
+tls:
+  certificates:
+    - certFile: /certs/example.io.crt
+      keyFile: /certs/example.io.key

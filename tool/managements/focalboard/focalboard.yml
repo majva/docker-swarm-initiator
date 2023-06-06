@@ -1,9 +1,0 @@
-version: '3'
-
-services:
-  focalboard:
-    image: mattermost/focalboard
-    container_name: focalboard
-    restart: unless-stopped
-    ports:
-      - '8085:8000'

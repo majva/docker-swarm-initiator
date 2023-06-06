@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  traefik:
+    image: traefik:2.9.6
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.labels.public == true]
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik_net
+        - traefik.http.routers.traefik.entrypoints=websecure
+        - traefik.http.routers.traefik.rule=Host(`traefik.example.com`)
+        - traefik.http.routers.traefik.tls=true
+        - traefik.http.services.traefik-service.loadbalancer.server.port=8080
+        - traefik.http.middlewares.limit.buffering.maxRequestBodyBytes=20000000
+    ports:
+      - 80:80
+      - 443:443
+      - 8092:8080
+    volumes:
+      - /var/docker_volumes/sshFS/traefik:/etc/traefik
+      - /etc/localtime:/etc/localtime:ro
+      - /var/docker_volumes/sshFS/traefik:/certs/
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - traefik_network
+
+networks:
+  traefik_network:
+    external: true
+    name: "traefik_net"

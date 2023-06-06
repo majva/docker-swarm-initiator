@@ -1,0 +1,165 @@
+version: "3.8"
+
+services:
+
+  zoo1:
+    image: confluentinc/cp-zookeeper:7.2.0
+    hostname: zoo1
+    user: root
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.zookeeper == true
+      update_config:
+        parallelism: 1
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_SERVERS: zoo1:2888:3888
+    networks:
+      - kafka-net
+    volumes:
+      - /var/docker_volumes/zookeeper/log:/var/lib/zookeeper/log:wo
+      - /var/docker_volumes/zookeeper/data:/var/lib/zookeeper/data:wo
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik_net
+        - traefik.http.routers.kafdrop.entrypoints=websecure
+        - traefik.http.routers.kafdrop.tls=true
+        - traefik.http.routers.kafdrop.rule=Host(`kafdrop.example.com`)
+        - traefik.http.services.kafdrop.loadbalancer.server.port=9000  
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.kafdrop == true
+      update_config:
+        parallelism: 1
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+
+    environment:
+      KAFKA_BROKERCONNECT: "kafka1:29092,kafka2:29093"
+      JVM_OPTS: "-Xms16M -Xmx48M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
+    networks:
+      - kafka-net
+      - traefik_net
+
+  kafka1:
+    image: confluentinc/cp-kafka:7.2.0
+    hostname: kafka1
+    user: root
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.kafka == true
+      update_config:
+        parallelism: 1
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+    ports:
+      - "9092:9092"
+      #- "29092:29092"
+      #- "9999:9999"
+    environment:
+      KAFKA_LISTENERS: "INTERNAL://:29092,EXTERNAL://:9092"
+      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka1:29092,EXTERNAL://192.168.101.11:9092"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,DOCKER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181"
+      KAFKA_BROKER_ID: 1
+      KAFKA_LOG_DIRS: "/var/lib/kafka-data"
+      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_JMX_PORT: 9999
+      KAFKA_JMX_HOSTNAME: ${DOCKER_HOST_IP:-127.0.0.1}
+      KAFKA_AUTHORIZER_CLASS_NAME: kafka.security.authorizer.AclAuthorizer
+      KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: "true"
+    depends_on:
+      - zoo1
+    command: >
+      bash -c "rm -f /var/lib/kafka-data/meta.properties && bash /etc/confluent/docker/run"
+    networks:
+      - kafka-net
+    volumes:
+      - /var/docker_volumes/kafka/data:/var/lib/kafka-data:wo
+      - /var/docker_volumes/kafka/config/server.properties:/etc/kafka/server.properties
+
+  kafka2:
+    image: confluentinc/cp-kafka:7.2.0
+    hostname: kafka2
+    user: root
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.kafka == true
+      update_config:
+        parallelism: 1
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+    ports:
+      - "9093:9093"
+      #- "29093:29093"
+      # - "1000:9999"
+    environment:
+      KAFKA_LISTENERS: "INTERNAL://:29093,EXTERNAL://:9093"
+      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka2:29093,EXTERNAL://192.168.101.11:9093"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,DOCKER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181"
+      KAFKA_BROKER_ID: 2
+      KAFKA_LOG_DIRS: "/var/lib/kafka-data"
+      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_JMX_PORT: 9999
+      KAFKA_JMX_HOSTNAME: ${DOCKER_HOST_IP:-127.0.0.1}
+      KAFKA_AUTHORIZER_CLASS_NAME: kafka.security.authorizer.AclAuthorizer
+      KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: "true"
+    depends_on:
+      - zoo1
+    command: >
+      bash -c "rm -f /var/lib/kafka-data/meta.properties && bash /etc/confluent/docker/run"
+    networks:
+      - kafka-net
+    volumes:
+      - /var/docker_volumes/kafka2/data:/var/lib/kafka-data:wo
+      - /var/docker_volumes/kafka2/config/server.properties:/etc/kafka/server.properties
+
+
+networks:
+  kafka-net:
+    external: true
+    name: "kafka-net"
+  traefik_net:
+    external: true
+    name: "traefik_net"

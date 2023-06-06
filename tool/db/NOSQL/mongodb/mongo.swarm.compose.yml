@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.mongodb == true
+      update_config:
+        parallelism: 1
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USERNAME?Variable not set}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD?Variable not set}
+    volumes:
+      - /var/docker_volumes/mongodb:/data/db

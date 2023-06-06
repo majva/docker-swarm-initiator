@@ -1,0 +1,63 @@
+version: "3.8"
+
+services:
+  
+  postgres-master:
+    image: postgres:14.4
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.postgresql == true
+      update_config:
+        parallelism: 1
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+    environment:
+      POSTGRES_USER: ${POSTGRES_SQL_USERNAME?Variable not set}
+      POSTGRES_PASSWORD: ${POSTGRES_SQL_PASSWORD?Variable not set}
+    networks:
+      - postgres-db
+    ports:
+      - 5432:5432
+    volumes:
+      - /var/docker_volumes/postgres:/var/lib/postgresql/data
+      - /var/docker_volumes/static_configs/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
+      - /var/docker_volumes/static_configs/postgres/pg_hba.conf:/etc/postgresql/pg_hba.conf
+   
+  postgres-slave:
+    image: postgres:14.4
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.postgresqlbackup == true
+      update_config:
+        parallelism: 1
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+    environment:
+      POSTGRES_USER: ${POSTGRES_SQL_USERNAME?Variable not set}
+      POSTGRES_PASSWORD: ${POSTGRES_SQL_PASSWORD?Variable not set}
+    ports:
+      - 5433:5432
+    networks:
+      - postgres-db
+    volumes:
+      - /var/docker_volumes/postgres:/var/lib/postgresql/data
+      - /var/docker_volumes/static_configs/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
+      - /var/docker_volumes/static_configs/postgres/pg_hba.conf:/etc/postgresql/pg_hba.conf
+
+
+networks:
+  postgres-db:
+    external: true
+    name: 'postgres-db'

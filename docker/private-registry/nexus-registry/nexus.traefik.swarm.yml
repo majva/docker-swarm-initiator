@@ -1,0 +1,58 @@
+version: "3.8"
+
+services:
+  nexus:
+    image: sonatype/nexus3:3.41.0
+    volumes:
+      - "/var/docker_volumes/nexus:/nexus-data"
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.labels.nexus == true]
+      update_config:
+        parallelism: 1
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik_net
+        
+        - traefik.http.routers.nexus.rule=Host(`nexus.example.com`)
+        - traefik.http.routers.nexus.tls=true
+        - traefik.http.routers.nexus.service=nexus-service
+        - traefik.http.routers.nexus.entrypoints=websecure
+        - traefik.http.services.nexus-service.loadbalancer.server.port=8081
+
+        - traefik.http.routers.nuget.rule=Host(`nuget.example.com`) && Method(`GET`)	
+        - traefik.http.routers.nuget.tls=true
+        - traefik.http.routers.nuget.service=nuget-service
+        - traefik.http.routers.nuget.entrypoints=websecure
+        - traefik.http.services.nuget-service.loadbalancer.server.port=8081
+        - traefik.http.middlewares.repository-add-prefix.addprefix.prefix=/repository/nuget-group/
+        - traefik.http.middlewares.repository-stripprefix.stripprefix.prefixes=/repository/nuget-group/
+        - traefik.http.routers.nuget.middlewares=repository-stripprefix@docker, repository-add-prefix@docker      
+        
+        - traefik.http.routers.nugetpush.rule=Host(`nuget.example.com`) && Method(`POST`, `PUT`, `DELETE`)	
+        - traefik.http.routers.nugetpush.tls=true
+        - traefik.http.routers.nugetpush.service=nuget-service
+        - traefik.http.routers.nugetpush.entrypoints=websecure
+        - traefik.http.middlewares.pushrepository-add-prefix.addprefix.prefix=/repository/nuget-hosted/
+        - traefik.http.middlewares.pushrepository-stripprefix.stripprefix.prefixes=/repository/nuget-hosted/
+        - traefik.http.routers.nugetpush.middlewares=pushrepository-stripprefix@docker, pushrepository-add-prefix@docker
+        
+        - traefik.http.routers.registry.rule=Host(`registry.example.com`)
+        - traefik.http.routers.registry.tls=true
+        - traefik.http.routers.registry.service=registry-service
+        - traefik.http.routers.registry.entrypoints=websecure
+        - traefik.http.services.registry-service.loadbalancer.server.port=9001
+    networks:
+      - traefik_net
+
+networks:
+  traefik_net:
+    external: true
+    name: "traefik_net"

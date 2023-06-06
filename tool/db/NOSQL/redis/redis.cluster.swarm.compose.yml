@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+
+  redis-master:
+    image: redis
+    networks:
+      - redis-net
+    ports:
+      - 6379:6379
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.redis == true
+    volumes:
+      - redis-master:/data
+
+  redis-slave:
+    image: redis
+    networks:
+      - redis-net
+    command: redis-server --slaveof redis-master 6379
+    deploy:
+      replicas: 2
+      placement:
+        constraints:
+          - node.labels.redis == true
+    volumes:
+      - redis-slave:/data
+
+  sentinel:
+    image: redis
+    networks:
+      - redis-net
+    ports:
+      - 26379:26379
+    command: >
+      bash -c "echo 'port 26379' > sentinel.conf &&
+      echo 'dir /tmp' >> sentinel.conf &&
+      echo 'sentinel monitor redis-master redis-master 6379 2' >> sentinel.conf &&
+      echo 'sentinel down-after-milliseconds redis-master 5000' >> sentinel.conf &&
+      echo 'sentinel parallel-syncs redis-master 1' >> sentinel.conf &&
+      echo 'sentinel failover-timeout redis-master 5000' >> sentinel.conf &&
+      cat sentinel.conf &&
+      redis-server sentinel.conf --sentinel"
+    links:
+      - redis-slave
+      - redis-master
+    deploy:
+      replicas: 3
+      placement:
+        constraints:
+          - node.labels.redis == true
+
+volumes:
+  redis-master:
+    driver: local
+  redis-slave:
+    driver: local
+
+networks:
+  redis-net:
+    external: true
+    name: "redis-net"

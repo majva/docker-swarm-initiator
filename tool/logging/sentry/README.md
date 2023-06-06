@@ -1,1 +1,1 @@
-see this https://github.com/getsentry/self-hosted
+Look at this https://github.com/getsentry/self-hosted

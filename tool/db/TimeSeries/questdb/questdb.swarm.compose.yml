@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  questdb:
+    image: questdb/questdb
+    ports:
+      - 9001:9000
+      - 9009:9009
+      - 8812:8812
+      - 9003:9003
+    volumes:
+      - /var/docker_volumes/questdb:/root/.questdb
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.questdb == true
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik_net
+        - traefik.http.routers.questdb.entrypoints=websecure
+        - traefik.http.routers.questdb.tls=true
+        - traefik.http.routers.questdb.rule=Host(`questdb.example.com`)
+        - traefik.http.services.questdb.loadbalancer.server.port=9000
+      update_config:
+        parallelism: 1
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+    environment:
+      - QDB_LOG_W_STDOUT_LEVEL=ERROR
+      - QDB_LOG_W_FILE_LEVEL=ERROR
+      - QDB_LOG_W_HTTP_MIN_LEVEL=ERROR
+      - QDB_SHARED_WORKER_COUNT=2 # Amount of worker threads
+      - QDB_PG_USER=${QUESTDB_USERNAME} # postgresql user -> Configured in .env file
+      - QDB_PG_PASSWORD=${QUESTDB_PASSWORD} # postgresql password -> Configured in .env file
+      - QDB_TELEMETRY_ENABLED=false # Disable telemetry
+    networks:
+      - traefik_network
+
+networks:
+  traefik_network:
+    external: true
+    name: "traefik_net"

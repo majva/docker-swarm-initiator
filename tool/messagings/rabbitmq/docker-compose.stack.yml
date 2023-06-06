@@ -1,0 +1,59 @@
+version: '3.7'
+
+configs:
+  rabbitmq-config:
+    external: true
+
+services:
+  cluster:
+    image: registry.example.com/rabbit-cluster:4.0
+    hostname: "{{.Service.Name}}.{{.Task.Slot}}.{{.Task.ID}}"
+    ports:
+      - 5672:5672
+      - 15672:15672
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.labels.rabbitmq == true]
+      update_config:
+        parallelism: 1
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik_net
+        - traefik.http.routers.rabbit-dashboard.entrypoints=websecure
+        - traefik.http.routers.rabbit-dashboard.tls=true
+        - traefik.http.routers.rabbit-dashboard.rule=Host(`rabbit-dashboard.example.com`)
+        - traefik.http.services.rabbit-dashboard.loadbalancer.server.port=15672
+        
+        # - traefik.tcp.routers.rabbit.entrypoints=rabbitmq
+        # - traefik.tcp.routers.rabbit.rule=HostSNI(`*`)
+
+        # - traefik.tcp.services.rabbit.loadbalancer.server.port=5672
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+      - RABBITMQ_DEFAULT_VHOST=/
+      - RABBITMQ_ERLANG_COOKIE=abc
+      - RABBITMQ_USE_LONGNAME=true
+      - RABBITMQ_MNESIA_DIR=/var/lib/rabbitmq/mnesia
+      - RABBITMQ_PLUGINS_EXPAND_DIR=/var/lib/rabbitmq/mnesia/plugins-expand
+      - SERVICE_NAME={{.Service.Name}}
+      - SLOT={{.Task.Slot}}
+      - MASTER_SLOT=1
+    networks:
+      - rabbitmq_net
+      - traefik_net
+
+networks:
+  rabbitmq_net:
+    external: true
+    name: "rabbitmq_net"
+  traefik_net:
+    external: true
+    name: "traefik_net"
