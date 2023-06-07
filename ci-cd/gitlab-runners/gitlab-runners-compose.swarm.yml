@@ -52,7 +52,7 @@ services:
       - --docker-network-mode=web-net
     environment:
       # - "CONCURRENT=8"
-      - "CI_SERVER_URL="
-      - "REGISTRATION_TOKEN="
+      - "CI_SERVER_URL=<your domain>"
+      - "REGISTRATION_TOKEN=<your registeration code>"
     networks:
       - web-net

@@ -3,12 +3,12 @@
 How to run gitlab runner on your ci-cd projects?
 
 - Note 
-    * first of all you must set domain and register token on gitlab-runner-compose.yml files
-    * get your register token on gitlab ci dashboard from admin section on this path
-        -> admin -> runner
+    * First of all it should better set your domain and register token on gitlab-runner-compose.yml files
+    * Get your register token on gitlab-ci dashboard from admin section on this path
+        -> admin -> runners
 
 
-- run this command on your node
-    ```
-        $ bash install.sh
-    ```
+- Run this command on your node
+``` bash
+bash install.sh
+```
