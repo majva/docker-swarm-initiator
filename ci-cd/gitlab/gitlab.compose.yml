@@ -9,7 +9,6 @@ networks:
   gitlab-net:
     external: true
     name: gitlab
-  gitlab:
 
 services:
   redis:
@@ -43,9 +42,9 @@ services:
     - redis
     - postgresql
     ports:
-    - "80:80"
+    - "8081:80"
     - "10022:22"
-    - "443:443"
+    - "4431:443"
     volumes:
     - gitlab-data:/home/git/data:Z
     healthcheck:
