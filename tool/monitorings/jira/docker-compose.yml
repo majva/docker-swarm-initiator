@@ -1,0 +1,56 @@
+version: '3.1'
+
+services:
+
+  jira:
+    image: atlassian/jira-software:9.6.0
+    container_name: jira
+    restart: always
+    depends_on:
+      - database
+    volumes:
+      - ./application-data/jira:/var/atlassian/application-data/jira
+      - ./server-jira.xml:/opt/atlassian/jira/conf/server.xml:ro
+      - ./atlassian-agent.jar:/opt/atlassian/jira/atlassian-agent.jar
+      - ./setenv-jira.sh:/opt/atlassian/jira/bin/setenv.sh
+    ports:
+      - 127.0.0.1:8080:8080
+    networks:
+      - jira-network
+#    mem_limit: 2500M
+
+  confluence:
+    image: atlassian/confluence-server:8.0.0-m015-ubuntu-jdk11
+    container_name: confluence
+    restart: always
+    depends_on:
+      - database
+    volumes:
+      - ./application-data/confluence:/var/atlassian/application-data/confluence
+      - ./server-conf.xml:/opt/atlassian/confluence/conf/server.xml:ro
+      - ./atlassian-agent.jar:/opt/atlassian/confluence/atlassian-agent.jar
+      - ./setenv-confluence.sh:/opt/atlassian/confluence/bin/setenv.sh
+    ports:
+      - 127.0.0.1:8090:8090
+      - 127.0.0.1:8091:8091
+    networks:
+      - jira-network
+      
+  database:
+    image: postgres:13-alpine
+    container_name: database
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: M8aYZ6n9jWYhaFxU
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data 
+    ports:
+      - 127.0.0.1:5433:5432
+    networks:
+      - jira-network
+
+
+networks:
+  jira-network:
+    name: jira-network
+

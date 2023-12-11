@@ -1,0 +1,1 @@
+java -jar atlassian-agent.jar -d -m test@test.com -n BAT -p 'conf' -o http://localhost:8090 -s BT5W-KP7Q-31DT-PTNG
