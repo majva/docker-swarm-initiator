@@ -7,7 +7,7 @@ services:
     container_name: confluence
     restart: always
     depends_on:
-      - database
+      - conf-database
     volumes:
       - /var/docker_volumes/conf-application-data:/var/atlassian/application-data/confluence
       - ./server-conf.xml:/opt/atlassian/confluence/conf/server.xml:ro
@@ -27,12 +27,12 @@ services:
       POSTGRES_PASSWORD: M8aYZ6n9jWYhaFxU
     volumes:
       - /var/docker_volumes/conf_postgres_data:/var/lib/postgresql/data 
-    ports:
-      - 127.0.0.1:5433:5432
+    #ports:
+    #  - 127.0.0.1:5433:5432
     networks:
       - conf-network
 
 networks:
-  jira-network:
+  conf-network:
     name: conf-network
 
