@@ -1,0 +1,38 @@
+version: '3.4'
+
+services:
+
+  confluence:
+    image: atlassian/confluence-server:8.0.0-m015-ubuntu-jdk11
+    container_name: confluence
+    restart: always
+    depends_on:
+      - database
+    volumes:
+      - /var/docker_volumes/conf-application-data:/var/atlassian/application-data/confluence
+      - ./server-conf.xml:/opt/atlassian/confluence/conf/server.xml:ro
+      - ./atlassian-agent.jar:/opt/atlassian/confluence/atlassian-agent.jar
+      - ./setenv-confluence.sh:/opt/atlassian/confluence/bin/setenv.sh
+    ports:
+      - 127.0.0.1:8090:8090
+      - 127.0.0.1:8091:8091
+    networks:
+      - conf-network
+      
+  conf-database:
+    image: postgres:13-alpine
+    container_name: conf_postgres_database
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: M8aYZ6n9jWYhaFxU
+    volumes:
+      - /var/docker_volumes/conf_postgres_data:/var/lib/postgresql/data 
+    ports:
+      - 127.0.0.1:5433:5432
+    networks:
+      - conf-network
+
+networks:
+  jira-network:
+    name: conf-network
+
